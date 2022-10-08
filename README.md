@@ -11,4 +11,4 @@ the Underwater Fog's render pass event to after post processing. It should work 
 
 Make sure your water shader is transparent or the effect won't work.
 
-[Demo](https://github.com/End3r6/URPUnderwaterEffects/blob/master/Screenshots/Showcase.png)
+![Demo](https://github.com/End3r6/URPUnderwaterEffects/blob/master/Screenshots/Showcase.png)
