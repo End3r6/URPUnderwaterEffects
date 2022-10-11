@@ -23,7 +23,8 @@ Tags
 }
 ```
 
-If you are using shader graph,
+If you are using shader graph, make sure your graph settings look like this:
+![Shader graph settings](https://github.com/End3r6/URPUnderwaterEffects/blob/master/Screenshots/ShaderGraphSettings.png)
 
 # Extenstion
 If you wish to add more effects on top of the basic fog, you need to sample the _HorizonLineTexture. This lets you put seperate the waterline.
