@@ -1,5 +1,61 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-9073543138827699483
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33c366f7e27804366a0e2cf05b2ff955, type: 3}
+  m_Name: DepthNormalsFeature
+  m_EditorClassIdentifier: 
+  m_Active: 0
+--- !u!114 &-6212919496298283212
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01927de6e201d488189e44643c8d7384, type: 3}
+  m_Name: Underwater Caustics
+  m_EditorClassIdentifier: 
+  m_Active: 0
+  settings:
+    noise:
+      angleOffset: 0
+      cellDensity: 30
+    RGBSplit: 0.32
+    width: 5.5
+    intensity: 30
+    speed: 50
+    shader: {fileID: 4800000, guid: 61c74b9aee9124d7b9d0fbca568be615, type: 3}
+    renderPassEvent: 600
+--- !u!114 &-2833551049352795535
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c2953997d1eb44248098423399f2d05, type: 3}
+  m_Name: Underwater Refraction
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  settings:
+    noise:
+      scale: 20
+    intensity: 0.24
+    speed: 1.68
+    shader: {fileID: 4800000, guid: d62561ebf75304669a55f4a6c8a22102, type: 3}
+    renderPassEvent: 550
 --- !u!114 &-352915259991466663
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -35,7 +91,11 @@ MonoBehaviour:
   m_RendererFeatures:
   - {fileID: -352915259991466663}
   - {fileID: 7897639110870892662}
-  m_RendererFeatureMap: 59dd64dc70311afb7600b187ed0c9a6d
+  - {fileID: -6212919496298283212}
+  - {fileID: -9073543138827699483}
+  - {fileID: 6048629292947494546}
+  - {fileID: -2833551049352795535}
+  m_RendererFeatureMap: 59dd64dc70311afb7600b187ed0c9a6d34bf0ab5a246c7a9e5fafdc3964c1482925628804b0cf153712a645a5534add8
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
@@ -68,13 +128,39 @@ MonoBehaviour:
     passOperation: 2
     failOperation: 0
     zFailOperation: 0
-  m_ShadowTransparentReceive: 0
+  m_ShadowTransparentReceive: 1
   m_RenderingMode: 0
   m_DepthPrimingMode: 0
   m_AccurateGbufferNormals: 0
   m_ClusteredRendering: 0
   m_TileSize: 32
   m_IntermediateTextureMode: 1
+--- !u!114 &6048629292947494546
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a401b6b1bb7fb24ea1bff49cd1e0f13, type: 3}
+  m_Name: CausticsFeature
+  m_EditorClassIdentifier: 
+  m_Active: 0
+  settings:
+    strength: 0.05
+    rgbSplit: 0.3
+    shadowMask: 1
+    texture: {fileID: 2800000, guid: f2c40b951cee11943a1f6d5ec1b42f2c, type: 3}
+    scale: 5
+    speed: 0.125
+    waterLevel: 0
+    depth: {x: 0.9480813, y: 4.948081}
+    fade: 1
+    renderPassEvent: 400
+    debug: 1
+  causticsShader: {fileID: 4800000, guid: e8cdbdcc4287bd344a1d042d8f601b9a, type: 3}
 --- !u!114 &7897639110870892662
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -90,6 +176,6 @@ MonoBehaviour:
   m_Active: 1
   settings:
     fogColor: {r: 0.003921569, g: 0.6627451, b: 0.81960785, a: 1}
-    vision: 1.51
+    vision: 7.53
     shader: {fileID: 4800000, guid: b4f727489374247aabfffdfd2d090876, type: 3}
     renderPassEvent: 600

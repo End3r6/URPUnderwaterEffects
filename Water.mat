@@ -17,9 +17,7 @@ Material:
   m_DoubleSidedGI: 1
   m_CustomRenderQueue: -1
   stringTagMap: {}
-  disabledShaderPasses:
-  - DepthOnly
-  - SHADOWCASTER
+  disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -67,9 +65,13 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _NormalMap:
+        m_Texture: {fileID: 2800000, guid: eeee6212fe6394766baaa93a1a886d39, type: 3}
+        m_Scale: {x: 500, y: 500}
+        m_Offset: {x: 0, y: 0}
     - _NormalWaves:
         m_Texture: {fileID: 2800000, guid: eeee6212fe6394766baaa93a1a886d39, type: 3}
-        m_Scale: {x: 50, y: 50}
+        m_Scale: {x: 600, y: 600}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
         m_Texture: {fileID: 0}
@@ -133,13 +135,14 @@ Material:
     - _NoiseScale: 10
     - _OcclusionStrength: 1
     - _Parallax: 0.005
+    - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _Reflection: 0.5
     - _RefractionDepth: 0.1
     - _RefractionStrength: 0.25
     - _SampleGI: 0
-    - _SeaDepth: 5
+    - _SeaDepth: 10.8
     - _SmallWaveSpeed: 1
     - _SmallWavesAmount: 0.2
     - _Smoothness: 0.618
@@ -161,6 +164,7 @@ Material:
     - _DeepColor: {r: 0.0038714935, g: 0.6610434, b: 0.8207547, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _InterStep: {r: 0.7, g: 1, b: 0, a: 0}
+    - _MainColor: {r: 0.3443396, g: 0.9459842, b: 1, a: 0.54509807}
     - _MainWave: {r: 1, g: 1, b: 0.25, a: 60}
     - _MediumMaves: {r: 1, g: 1.3, b: 0.15, a: 18}
     - _SeaFoamMask: {r: -0.1, g: 1.2, b: 0.64, a: 0}

@@ -1,4 +1,4 @@
-Shader "Hidden/Worlds End/VolumetricClouds"
+Shader "Hidden/HorizonLine"
 {
     Properties
     {

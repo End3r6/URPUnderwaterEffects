@@ -19,9 +19,6 @@ Shader "WorldsEndWater/Water"
         _ShallowColor("Shallow Color", Color) = (1, 1, 1, 1)
         _DeepColor("Deep Color", Color) = (0, 0, 0, 1)
         _SeaDepth("Depth", Float) = 0.5
-
-        [Header(Intersection Foam)]
-        _InterFoamMap("Intersection Foam Map", 2D) = "black" {}
     }
 
     SubShader

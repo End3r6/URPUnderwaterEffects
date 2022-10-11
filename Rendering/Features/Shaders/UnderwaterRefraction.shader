@@ -11,22 +11,14 @@ Shader "Hidden/UnderwaterFog"
 
         Pass
         {
-            Blend SrcAlpha OneMinusSrcAlpha
-
-            Tags
-            {
-                "Queue" = "Transparent" 
-                "RenderType" = "Transparent" 
-                "RenderPipeline" = "UniversalRenderPipeline"
-            }
-
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Common.hlsl"
+
+            #include "./HLSL/Noise.hlsl"
 
             struct appdata
             {
@@ -42,17 +34,23 @@ Shader "Hidden/UnderwaterFog"
                 float2 uv : TEXCOORD0;
             };
 
-            float _Vision;
-
-            half4 _FogColor;
+            float scale, intensity, speed;
 
             sampler2D _MainTex;
 
-            TEXTURE2D(_CameraDepthTexture);
-            SAMPLER(sampler_CameraDepthTexture);
-
             TEXTURE2D(_HorizonLineTexture);
             SAMPLER(sampler_HorizonLineTexture);
+
+            float3 NormalFromHeight(float In, float bumpScale)
+            {
+                float3 normal;
+
+                normal.x = ddx(In);
+                normal.y = ddy(In);
+                normal.z = sqrt(1 - normal.x * normal.x - normal.y * normal.y); // Reconstruct z component to get a unit normal.
+
+                return normal * float3(bumpScale, bumpScale, 1);
+            }
 
             v2f vert (appdata v)
             {
@@ -63,27 +61,20 @@ Shader "Hidden/UnderwaterFog"
                 return o;
             }
 
-            float4 frag (v2f i) : SV_Target
+            float3 frag (v2f i) : SV_Target
             {
                 float3 col = tex2D(_MainTex, i.uv);
 
                 float waterLineMask = SAMPLE_TEXTURE2D(_HorizonLineTexture, sampler_HorizonLineTexture, i.uv).r;
+                float2 noise = NormalFromHeight(GradientNoise(i.uv + (_Time.y * (speed / 100)), scale), intensity);
 
-                float waterMask = waterLineMask;
-                
-                float depthMask = SAMPLE_TEXTURE2D(_CameraDepthTexture, sampler_CameraDepthTexture, i.uv).r;
+                float refColor = tex2D(_MainTex, i.uv + noise) * (1 - waterLineMask);
 
-                float depth = saturate(LinearEyeDepth(depthMask, _ZBufferParams.y) * _Vision / 10);
+                float3 aboveWater = col * waterLineMask;
 
-                float3 aboveWater = col * waterMask;
+                float3 finalColor = refColor + aboveWater;
 
-                float3 color = _FogColor.rgb * (1 - waterMask);
-
-                float3 finalColor = lerp(color, _FogColor * 0.3, 1 - depth) + aboveWater;
-
-                return float4(finalColor, depth);
-
-                // return waterLineMask;
+                return finalColor;
             }
             ENDHLSL
         }
