@@ -31,11 +31,14 @@ If you wish to add more effects on top of the basic fog, you need to sample the 
 
 # Roadmap
 * [ ] Caustics
-* [ ] Distortion
+* [x] Distortion
 * [ ] Sunrays
 
 # Cotributions
 If you wish to contriubute to this effect, feel free to make a pull request.
 
 # Demo
+Fog
 ![Demo](https://github.com/End3r6/URPUnderwaterEffects/blob/master/Screenshots/Showcase.png)
+Fog with distortion
+![Distortion](https://github.com/End3r6/URPUnderwaterEffects/blob/master/Screenshots/DistortionShowcase.png)
