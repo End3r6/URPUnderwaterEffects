@@ -9,10 +9,25 @@ In your URP render settings, clikc add feature and choose both Horizon Line Text
 Underwater Fog. Set the Horizon Line Texture render pass event to before pos processing and set 
 the Underwater Fog's render pass event to after post processing. It should work after that.
 
-Make sure your water shader is transparent or the effect won't work.
+If you are using hlsl (urp shader code), make sure your shader has the following snippet in the pass or subshader blocks.
+
+```hlsl
+Blend SrcAlpha OneMinusSrcAlpha
+LOD 300
+
+Tags
+{
+  "Queue" = "Transparent" 
+  "RenderType" = "Transparent" 
+  "RenderPipeline" = "UniversalRenderPipeline"
+}
+```
+
+If you are using shader graph, make sure your graph settings look like this:
+![Shader graph settings](https://github.com/End3r6/URPUnderwaterEffects/blob/master/Screenshots/ShaderGraphSettings.png)
 
 # Extenstion
-If you wish to add more effects on top of the basic fog, you need to sample the _HorizonLineTexture. This lets you put it under the waterline.
+If you wish to add more effects on top of the basic fog, you need to sample the _HorizonLineTexture. This lets you put seperate the waterline.
 
 # Roadmap
 * [ ] Caustics
