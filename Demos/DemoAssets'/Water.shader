@@ -164,7 +164,9 @@ Shader "WorldsEndWater/Water"
 
                 float4 opaqueTexture = SAMPLE_TEXTURE2D(_CameraOpaqueTexture, sampler_CameraOpaqueTexture, screenUV + (i.normal.xy * _Refraction));
 
-                half4 color = lerp(_DeepColor, _ShallowColor, depthMask * _SeaDepth);
+                float colorDepth = depthMask * _SeaDepth;
+
+                half4 color = lerp(_DeepColor, _ShallowColor, colorDepth);
 
                 // //Light info
                 InputData lightInput = (InputData)0;
@@ -183,7 +185,7 @@ Shader "WorldsEndWater/Water"
 
                 return UniversalFragmentBlinnPhong(lightInput, surfaceData);
 
-                // return float4(colorDepth, 1);
+                // return float4(colorDepth, colorDepth, colorDepth, 1);
             }
             ENDHLSL
         }
