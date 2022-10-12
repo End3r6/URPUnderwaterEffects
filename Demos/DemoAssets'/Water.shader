@@ -14,11 +14,13 @@ Shader "WorldsEndWater/Water"
         _Smoothness("Specular", Range(0, 1)) = 1
         [HDR]_SpecularTint("Specular Tint", Color) = (1, 1, 1, 1)
 
-
         [Header(Color)]
         _ShallowColor("Shallow Color", Color) = (1, 1, 1, 1)
         _DeepColor("Deep Color", Color) = (0, 0, 0, 1)
         _SeaDepth("Depth", Float) = 0.5
+
+        [Header(Refraction)]
+        _Refraction("Refraction", Float) = 0.5
     }
 
     SubShader
@@ -56,6 +58,9 @@ Shader "WorldsEndWater/Water"
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+            #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Common.hlsl"
+
+            #include "Assets/BasicUnderwaterFog/Rendering/Features/Shaders/HLSL/Noise.hlsl"
 
             // the original vertex struct
             struct appdata
@@ -96,10 +101,10 @@ Shader "WorldsEndWater/Water"
 
             float4 _MainWave, _SmallWave, _MediumMaves;
 
-            float _Smoothness, _Bump, _SeaDepth, _WavesHeight;
+            float _Smoothness, _Bump, _SeaDepth, _WavesHeight, _Refraction;
             float4 _BumpSpeed;
 
-            void InitializeFragmentNormal(inout v2f i) 
+            void InitializeFragmentNormal(inout v2f i, inout float4 normals) 
             {
                 float4 normalMap = tex2D(_NormalWaves, float2(i.uv.x + (_Time.x * _BumpSpeed.x), i.uv.y + (_Time.y * _BumpSpeed.y))) * tex2D(_NormalWaves, float2(i.uv.x + (_Time.x * _BumpSpeed.z), i.uv.y + (_Time.y * _BumpSpeed.w)));
                 i.normal.xy = normalMap.wy * 2 - 1;
@@ -110,6 +115,18 @@ Shader "WorldsEndWater/Water"
                 i.normal = i.normal.xzy;
 
                 i.normal = normalize(i.normal);
+                normals = normalMap;
+            }
+
+            float3 NormalFromHeight(float In, float bumpScale)
+            {
+                float3 normal;
+
+                normal.x = ddx(In);
+                normal.y = ddy(In);
+                normal.z = sqrt(1 - normal.x * normal.x - normal.y * normal.y); // Reconstruct z component to get a unit normal.
+
+                return normal * float3(bumpScale, bumpScale, 1);
             }
 
             v2f vert (appdata v)
@@ -136,16 +153,18 @@ Shader "WorldsEndWater/Water"
 
             float4 frag(v2f i) : SV_TARGET
             {
-                InitializeFragmentNormal(i);
+                float4 normalMap;
+                InitializeFragmentNormal(i, normalMap);
 
                 //Screen
                 float2 screenUV = (i.screenPos.xy) / i.screenPos.w;
 
                 //Depth
-                half4 depthMask = SAMPLE_TEXTURE2D(_CameraDepthTexture, sampler_CameraDepthTexture, screenUV);
+                float depthMask = SAMPLE_TEXTURE2D(_CameraDepthTexture, sampler_CameraDepthTexture, screenUV + (i.normal.xy * _Refraction));
 
-                float3 colorDepth = depthMask * _SeaDepth;
-                half4 color = lerp(_DeepColor, _ShallowColor, colorDepth.x * _SeaDepth);
+                float4 opaqueTexture = SAMPLE_TEXTURE2D(_CameraOpaqueTexture, sampler_CameraOpaqueTexture, screenUV + (i.normal.xy * _Refraction));
+
+                half4 color = lerp(_DeepColor, _ShallowColor, depthMask * _SeaDepth);
 
                 // //Light info
                 InputData lightInput = (InputData)0;
@@ -156,7 +175,7 @@ Shader "WorldsEndWater/Water"
                 lightInput.shadowCoord = TransformWorldToShadowCoord(i.positionWS);
                 
                 SurfaceData surfaceData = (SurfaceData)0;
-                surfaceData.albedo = color.rgb;
+                surfaceData.albedo = color.rgb + (opaqueTexture * 0.2);
                 surfaceData.alpha = color.a;
 
                 surfaceData.specular = _SpecularTint;
