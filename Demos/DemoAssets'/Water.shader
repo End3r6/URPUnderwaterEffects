@@ -164,7 +164,7 @@ Shader "WorldsEndWater/Water"
 
                 float4 opaqueTexture = SAMPLE_TEXTURE2D(_CameraOpaqueTexture, sampler_CameraOpaqueTexture, screenUV + (i.normal.xy * _Refraction));
 
-                float colorDepth = depthMask * _SeaDepth;
+                float colorDepth = saturate(depthMask * _SeaDepth);
 
                 half4 color = lerp(_DeepColor, _ShallowColor, colorDepth);
 

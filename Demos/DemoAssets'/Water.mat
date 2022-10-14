@@ -144,7 +144,7 @@ Material:
     - _RefractionStrength: 0.25
     - _SampleGI: 0
     - _Scale: 20
-    - _SeaDepth: 1
+    - _SeaDepth: 18.24
     - _SmallWaveSpeed: 1
     - _SmallWavesAmount: 0.2
     - _Smoothness: 0.618
