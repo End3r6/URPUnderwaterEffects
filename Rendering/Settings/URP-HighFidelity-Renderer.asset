@@ -16,10 +16,10 @@ MonoBehaviour:
   settings:
     caustics:
       texture: {fileID: 2800000, guid: e391256aba824482bb9311d839bf7d7b, type: 3}
-      RGBSplit: 0.42
+      RGBSplit: 0.67
       speed: 0.05
-      tiling: 9.91
-    intensity: 2.9
+      tiling: 11.72
+    intensity: 15.33
     range: 1
     shader: {fileID: 4800000, guid: 61c74b9aee9124d7b9d0fbca568be615, type: 3}
     renderPassEvent: 600
@@ -77,10 +77,10 @@ MonoBehaviour:
       type: 3}
   m_RendererFeatures:
   - {fileID: -352915259991466663}
-  - {fileID: 7897639110870892662}
-  - {fileID: -6212919496298283212}
   - {fileID: -2833551049352795535}
-  m_RendererFeatureMap: 59dd64dc70311afb7600b187ed0c9a6d34bf0ab5a246c7a9712a645a5534add8
+  - {fileID: -6212919496298283212}
+  - {fileID: 7897639110870892662}
+  m_RendererFeatureMap: 59dd64dc70311afb712a645a5534add834bf0ab5a246c7a97600b187ed0c9a6d
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}

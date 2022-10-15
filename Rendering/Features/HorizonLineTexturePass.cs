@@ -78,6 +78,7 @@ public class HorizonLineTexturePass : ScriptableRendererFeature
             Material material = new Material(settings.shader);
 
             Material waterPlaneMat = new Material(Shader.Find("Hidden/White"));
+            Material backFaceMat = new Material(Shader.Find("Hidden/BlackUnder"));
 
             //it is very important that if something fails our code still calls 
             //CommandBufferPool.Release(cmd) or we will have a HUGE memory leak
@@ -92,9 +93,13 @@ public class HorizonLineTexturePass : ScriptableRendererFeature
                 context.ExecuteCommandBuffer(cmd);
 
                 DrawingSettings drawSettings = CreateDrawingSettings(shaderTagIdList, ref renderingData, SortingCriteria.CommonOpaque);
+                DrawingSettings drawSettingsUnder = CreateDrawingSettings(shaderTagIdList, ref renderingData, SortingCriteria.CommonOpaque);
 
                 drawSettings.overrideMaterial = waterPlaneMat;
+                drawSettingsUnder.overrideMaterial = backFaceMat;
+
                 context.DrawRenderers(renderingData.cullResults, ref drawSettings, ref filteringSettings);
+                context.DrawRenderers(renderingData.cullResults, ref drawSettingsUnder, ref filteringSettings);
             }
             catch
             {
