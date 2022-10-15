@@ -30,7 +30,7 @@ If you are using shader graph, make sure your graph settings look like this:
 If you wish to add more effects on top of the basic fog, you need to sample the _HorizonLineTexture. This lets you put seperate the waterline.
 
 # Roadmap
-* [ ] Caustics
+* [x] Caustics
 * [x] Distortion
 * [ ] Sunrays
 
