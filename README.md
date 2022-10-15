@@ -5,8 +5,8 @@ An implementation of underwater effects that show under the water line.
 Download the files by clicking the green Code button on the top right corner of this repo. Extract the zip file and drag the folder into your assets of your unity project.
 
 # How to use
-In your URP render settings, click add feature and choose both Horizon Line Texture and 
-any of the additional effects. Set the Horizon Line Texture render pass event to before post processing and set 
+In your URP render settings, click add feature and choose Horizon Line Texture and 
+any of the additional effects shown. Set the Horizon Line Texture render pass event to before post processing and set 
 the additional effect's render pass events to after post processing. It should work after that.
 
 If you are using hlsl (urp shader code), make sure your shader has the following snippet in the pass or subshader blocks.
