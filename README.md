@@ -33,6 +33,7 @@ If you wish to add more effects on top of the basic fog, you need to sample the 
 * [x] Caustics
 * [x] Distortion
 * [ ] Sunrays
+* [ ] Better Waterline Transition
 
 # Cotributions
 If you wish to contriubute to this repo, feel free to make a pull request.
