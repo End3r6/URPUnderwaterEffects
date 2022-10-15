@@ -1,18 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-9073543138827699483
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 33c366f7e27804366a0e2cf05b2ff955, type: 3}
-  m_Name: DepthNormalsFeature
-  m_EditorClassIdentifier: 
-  m_Active: 0
 --- !u!114 &-6212919496298283212
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25,15 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01927de6e201d488189e44643c8d7384, type: 3}
   m_Name: Underwater Caustics
   m_EditorClassIdentifier: 
-  m_Active: 0
+  m_Active: 1
   settings:
-    noise:
-      angleOffset: 0
-      cellDensity: 30
-    RGBSplit: 0.32
-    width: 5.5
-    intensity: 2.3
-    speed: 50
+    caustics:
+      texture: {fileID: 2800000, guid: e391256aba824482bb9311d839bf7d7b, type: 3}
+      RGBSplit: 0.42
+      speed: 0.05
+      tiling: 9.91
+    intensity: 2.9
+    range: 1
     shader: {fileID: 4800000, guid: 61c74b9aee9124d7b9d0fbca568be615, type: 3}
     renderPassEvent: 600
 --- !u!114 &-2833551049352795535
@@ -92,9 +79,8 @@ MonoBehaviour:
   - {fileID: -352915259991466663}
   - {fileID: 7897639110870892662}
   - {fileID: -6212919496298283212}
-  - {fileID: -9073543138827699483}
   - {fileID: -2833551049352795535}
-  m_RendererFeatureMap: 59dd64dc70311afb7600b187ed0c9a6d34bf0ab5a246c7a9e5fafdc3964c1482712a645a5534add8
+  m_RendererFeatureMap: 59dd64dc70311afb7600b187ed0c9a6d34bf0ab5a246c7a9712a645a5534add8
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
@@ -149,6 +135,6 @@ MonoBehaviour:
   m_Active: 1
   settings:
     fogColor: {r: 0.06541474, g: 0.55373144, b: 0.6603774, a: 1}
-    vision: 74.9
+    vision: 25
     shader: {fileID: 4800000, guid: b4f727489374247aabfffdfd2d090876, type: 3}
     renderPassEvent: 600

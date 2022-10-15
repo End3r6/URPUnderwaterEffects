@@ -10,17 +10,17 @@ public class UnderwaterCaustics : ScriptableRendererFeature
         [System.Serializable]
         public class Caustics
         {
-            public float angleOffset;
-            public float cellDensity;
+            public Texture2D texture;
+            public float RGBSplit;
+            public float speed;
+            public float tiling;
         }
 
-        public Caustics noise = new Caustics();
-
-        public float RGBSplit;
-        public float width;
+        public Caustics caustics = new Caustics();
 
         public float intensity;
-        public float speed;
+
+        public float range;
 
         //future settings
         public Shader shader;
@@ -75,13 +75,17 @@ public class UnderwaterCaustics : ScriptableRendererFeature
             //CommandBufferPool.Release(cmd) or we will have a HUGE memory leak
             try
             {
-                material.SetFloat("angleOffset", settings.noise.angleOffset);
-                material.SetFloat("cellDensity", settings.noise.cellDensity);
-                material.SetFloat("width", settings.width);
-                material.SetFloat("speed", settings.speed);
-                material.SetFloat("RGBSplit", settings.RGBSplit);
+                material.SetTexture("_Caustics", settings.caustics.texture);
+                material.SetFloat("speed", settings.caustics.speed);
+                material.SetFloat("tiling", settings.caustics.tiling);
+                material.SetFloat("RGBSplit", settings.caustics.RGBSplit);
+
                 material.SetFloat("intensity", settings.intensity);
-                material.SetMatrix("_CamToWorld", renderingData.cameraData.camera.cameraToWorldMatrix);
+                material.SetFloat("range", settings.range);
+
+                var sunMatrix = renderingData.lightData.visibleLights[renderingData.lightData.mainLightIndex].localToWorldMatrix;
+                material.SetMatrix("_MainLightDirection", sunMatrix);
+                // material.SetMatrix("_CamToWorld", renderingData.cameraData.camera.cameraToWorldMatrix);
                 
                 cmd.Blit(source, tempTexture.Identifier());
                 cmd.Blit(tempTexture.Identifier(), source, material, 0);

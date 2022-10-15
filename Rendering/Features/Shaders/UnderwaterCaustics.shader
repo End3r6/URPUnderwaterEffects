@@ -11,14 +11,22 @@ Shader "Hidden/UnderwaterCaustics"
 
         Pass
         {
+            Blend SrcAlpha OneMinusSrcAlpha
+
+            Tags
+            {
+                "Queue" = "Transparent" 
+                "RenderType" = "Transparent" 
+                "RenderPipeline" = "UniversalRenderPipeline"
+            }
+
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Common.hlsl"
-
-            #include "./HLSL/Noise.hlsl"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
 
             struct appdata
             {
@@ -32,56 +40,39 @@ Shader "Hidden/UnderwaterCaustics"
                 float4 vertex : SV_POSITION;
 
                 float2 uv : TEXCOORD0;
-
-                float4 screenPos : TEXCOORD1;
             };
 
-            float4x4 _CamToWorld;
-            float angleOffset, cellDensity, width, speed, RGBSplit, intensity;
+            float tiling, speed, RGBSplit, intensity, range;
 
             sampler2D _MainTex;
+
+            half4x4 _MainLightDirection;
 
             TEXTURE2D(_CameraDepthNormalsTexture);
             SAMPLER(sampler_CameraDepthNormalsTexture);
 
+            TEXTURE2D(_Caustics);
+            SAMPLER(sampler_Caustics);
+
             TEXTURE2D(_HorizonLineTexture);
             SAMPLER(sampler_HorizonLineTexture);
 
-            TEXTURE2D(_CameraDepthTexture);
-            SAMPLER(sampler_CameraDepthTexture);
-
-            inline float DecodeFloatRG( float2 enc )
+            half2 Panner(half2 uv, half speed, half tiling)
             {
-                float2 kDecodeDot = float2(1.0, 1/255.0);
-                return dot( enc, kDecodeDot );
+                return (half2(1, 0) * _Time.y * speed) + (uv * tiling);
             }
 
-            inline float3 DecodeViewNormalStereo( float4 enc4 )
+            half4 SampleCaustics(half2 uv, half split)
             {
-                float kScale = 1.7777;
-                float3 nn = enc4.xyz*float3(2*kScale,2*kScale,0) + float3(-kScale,-kScale,1);
-                float g = 2.0 / dot(nn.xyz,nn.xyz);
-                float3 n;
-                n.xy = g*nn.xy;
-                n.z = g-1;
-                return n;
-            }
+                half2 uv1 = uv + half2(split, split);
+                half2 uv2 = uv + half2(split, -split);
+                half2 uv3 = uv + half2(-split, -split);
 
-            inline void DecodeDepthNormal( float4 enc, out float depth, out float3 normal )
-            {
-                depth = DecodeFloatRG (enc.zw);
-                normal = DecodeViewNormalStereo (enc);
-            }
+                half r = SAMPLE_TEXTURE2D(_Caustics, sampler_Caustics, uv1).r;
+                half g = SAMPLE_TEXTURE2D(_Caustics, sampler_Caustics, uv2).r;
+                half b = SAMPLE_TEXTURE2D(_Caustics, sampler_Caustics, uv3).r;
 
-            real3 GetWorldPos(real2 uv)
-            {
-                #if UNITY_REVERSED_Z
-                    real depth = SAMPLE_TEXTURE2D(_CameraDepthTexture, sampler_CameraDepthTexture, uv).r;
-                #else
-                    // Adjust z to match NDC for OpenGL
-                    real depth = lerp(UNITY_NEAR_CLIP_VALUE, 1, SAMPLE_TEXTURE2D(_CameraDepthTexture, sampler_CameraDepthTexture, uv));
-                #endif
-                return ComputeWorldSpacePosition(uv, depth, UNITY_MATRIX_I_VP);
+                return half4(r, g, b, r);
             }
 
             v2f vert (appdata v)
@@ -90,45 +81,44 @@ Shader "Hidden/UnderwaterCaustics"
                 o.vertex = TransformWorldToHClip(v.vertex.xyz);
                 o.uv = v.uv;
 
-                o.screenPos = ComputeScreenPos(o.vertex);
-
                 return o;
             }
 
-            float3 frag (v2f i) : SV_Target
+            float4 frag (v2f i) : SV_Target
             {
-                float3 col = tex2D(_MainTex, i.uv);
+                float2 positionNDC = i.vertex.xy / _ScaledScreenParams.xy;
 
+                // sample scene depth using screen-space coordinates
+                #if UNITY_REVERSED_Z
+                real depth = SampleSceneDepth(positionNDC);
+                #else
+                    real depth = lerp(UNITY_NEAR_CLIP_VALUE, 1, SampleSceneDepth(UV));
+                #endif
+
+                float3 positionWS = ComputeWorldSpacePosition(positionNDC, depth, UNITY_MATRIX_I_VP);
+
+                float3 positionOS = TransformWorldToObject(positionWS);
+
+                float distance = 1 - SAMPLE_TEXTURE2D(_CameraDepthTexture, sampler_CameraDepthTexture, i.uv).r * 100;
                 float waterLineMask = SAMPLE_TEXTURE2D(_HorizonLineTexture, sampler_HorizonLineTexture, i.uv).r;
-                // float4 depthNormals = SAMPLE_TEXTURE2D(_CameraDepthNormalsTexture, sampler_CameraDepthNormalsTexture, i.uv);
-
-                // float depthMask = SAMPLE_TEXTURE2D(_CameraDepthTexture, sampler_CameraDepthTexture, i.uv).r;
-                // float depth = LinearEyeDepth(depthMask, _ZBufferParams.y);
-
-                float3 normal;
-                float depth;
-
-                DecodeDepthNormal(
-                    SAMPLE_TEXTURE2D(_CameraDepthNormalsTexture, sampler_CameraDepthNormalsTexture, i.uv),
-                    depth,
-                    normal
-                );
-
-                normal = mul( (float3x3)_CamToWorld, normal);
                 
+                half4 caustics = 0;
+                if((distance < range))
+                {
+                    half2 uv = mul(positionWS, _MainLightDirection).xy;
 
-                float3 aboveWater = col * waterLineMask;
+                    half2 uv1 = Panner(uv, speed, 1 / tiling);
+                    half2 uv2 = Panner(uv, 1 * speed, -1 / tiling);
 
-                //Generates a voronoi noise that is split on th R and G.
-                float3 causticsNoise = float3
-                (
-                    pow(VoronoiNoise((i.uv + (RGBSplit / 100)), angleOffset + (_Time * speed), cellDensity).x, width),
-                    pow(VoronoiNoise((i.uv), angleOffset + (_Time * speed), cellDensity).x, width),
-                    pow(VoronoiNoise((i.uv - (RGBSplit / 100)), angleOffset + (_Time * speed), cellDensity).x, width)
-                );
+                    half4 tex1 = SampleCaustics(uv1, RGBSplit / 100);
+                    half4 tex2 = SampleCaustics(uv2, RGBSplit / 100);
 
-                //the final caustics mapped to the main color and waterline texture.
-                float3 caustics = ((causticsNoise * depth * intensity) + col) * (1 - waterLineMask);
+                    caustics = min(tex1, tex2) * (1 - waterLineMask) * -intensity;
+                }
+
+                float4 col = tex2D(_MainTex, i.uv);
+
+                float4 aboveWater = col * waterLineMask;
 
                 //final combination
                 return aboveWater + caustics;
