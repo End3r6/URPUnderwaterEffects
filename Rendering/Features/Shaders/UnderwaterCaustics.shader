@@ -28,6 +28,8 @@ Shader "Hidden/UnderwaterCaustics"
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Common.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
 
+            #include "Assets/BasicUnderwaterFog/Rendering/Features/Shaders/HLSL/Caustics.hlsl"
+
             struct appdata
             {
                 float4 vertex : POSITION;
@@ -51,29 +53,8 @@ Shader "Hidden/UnderwaterCaustics"
             TEXTURE2D(_CameraDepthNormalsTexture);
             SAMPLER(sampler_CameraDepthNormalsTexture);
 
-            TEXTURE2D(_Caustics);
-            SAMPLER(sampler_Caustics);
-
             TEXTURE2D(_HorizonLineTexture);
             SAMPLER(sampler_HorizonLineTexture);
-
-            half2 Panner(half2 uv, half speed, half tiling)
-            {
-                return (half2(1, 0) * _Time.y * speed) + (uv * tiling);
-            }
-
-            half4 SampleCaustics(half2 uv, half split)
-            {
-                half2 uv1 = uv + half2(split, split);
-                half2 uv2 = uv + half2(split, -split);
-                half2 uv3 = uv + half2(-split, -split);
-
-                half r = SAMPLE_TEXTURE2D(_Caustics, sampler_Caustics, uv1).r;
-                half g = SAMPLE_TEXTURE2D(_Caustics, sampler_Caustics, uv2).r;
-                half b = SAMPLE_TEXTURE2D(_Caustics, sampler_Caustics, uv3).r;
-
-                return half4(r, g, b, r);
-            }
 
             v2f vert (appdata v)
             {

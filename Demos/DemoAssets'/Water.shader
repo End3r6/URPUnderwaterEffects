@@ -21,6 +21,13 @@ Shader "WorldsEndWater/Water"
 
         [Header(Refraction)]
         _Refraction("Refraction", Float) = 0.5
+
+        [Header(Caustics)]
+        _Caustics("Caustics Texture", 2D) = "white" {}
+        _Speed("Speed", Float) = 0.5
+        _Tiling("Tiling", Float) = 10 
+        _RGBSplit("RGB Split", Float) = 0.5
+        _Intensity("Intensity", Float) = 1
     }
 
     SubShader
@@ -59,8 +66,10 @@ Shader "WorldsEndWater/Water"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Common.hlsl"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
 
             #include "Assets/BasicUnderwaterFog/Rendering/Features/Shaders/HLSL/Noise.hlsl"
+            #include "Assets/BasicUnderwaterFog/Rendering/Features/Shaders/HLSL/Caustics.hlsl"
 
             // the original vertex struct
             struct appdata
@@ -90,9 +99,6 @@ Shader "WorldsEndWater/Water"
                 half4 _SpecularTint;
             CBUFFER_END
 
-            TEXTURE2D(_CameraDepthTexture);
-            SAMPLER(sampler_CameraDepthTexture);
-
             TEXTURE2D(_CameraOpaqueTexture);
             SAMPLER(sampler_CameraOpaqueTexture);
 
@@ -103,6 +109,9 @@ Shader "WorldsEndWater/Water"
 
             float _Smoothness, _Bump, _SeaDepth, _WavesHeight, _Refraction;
             float4 _BumpSpeed;
+
+            half4x4 _MainLightDirection;
+            float _Tiling, _Speed, _RGBSplit, _Intensity;
 
             void InitializeFragmentNormal(inout v2f i, inout float4 normals) 
             {
@@ -168,6 +177,29 @@ Shader "WorldsEndWater/Water"
 
                 half4 color = lerp(_DeepColor, _ShallowColor, colorDepth);
 
+                float2 positionNDC = i.vertex.xy / _ScaledScreenParams.xy;
+
+                // sample scene depth using screen-space coordinates
+                #if UNITY_REVERSED_Z
+                    real depth = SampleSceneDepth(positionNDC);
+                #else
+                    real depth = lerp(UNITY_NEAR_CLIP_VALUE, 1, SampleSceneDepth(UV));
+                #endif
+
+                float3 positionWS = ComputeWorldSpacePosition(positionNDC, depth, UNITY_MATRIX_I_VP);
+
+                float3 positionOS = TransformWorldToObject(positionWS);
+
+                half2 uv = mul(positionWS, _MainLightDirection).xy;
+
+                half2 uv1 = Panner(uv, _Speed, 1 / _Tiling);
+                half2 uv2 = Panner(uv, 1 * _Speed, -1 / _Tiling);
+
+                half4 tex1 = SampleCaustics(uv1, _RGBSplit / 100);
+                half4 tex2 = SampleCaustics(uv2, _RGBSplit / 100);
+
+                half4 caustics = min(tex1, tex2) * _Intensity;
+
                 // //Light info
                 InputData lightInput = (InputData)0;
                 lightInput.normalWS = normalize(i.normal);
@@ -177,15 +209,13 @@ Shader "WorldsEndWater/Water"
                 lightInput.shadowCoord = TransformWorldToShadowCoord(i.positionWS);
                 
                 SurfaceData surfaceData = (SurfaceData)0;
-                surfaceData.albedo = color.rgb + (opaqueTexture * 0.2);
+                surfaceData.albedo = color.rgb + caustics + (opaqueTexture * 0.2);
                 surfaceData.alpha = color.a;
 
                 surfaceData.specular = _SpecularTint;
                 surfaceData.smoothness = _Smoothness;
 
                 return UniversalFragmentBlinnPhong(lightInput, surfaceData);
-
-                // return float4(colorDepth, colorDepth, colorDepth, 1);
             }
             ENDHLSL
         }

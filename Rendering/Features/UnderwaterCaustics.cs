@@ -85,7 +85,6 @@ public class UnderwaterCaustics : ScriptableRendererFeature
 
                 var sunMatrix = renderingData.lightData.visibleLights[renderingData.lightData.mainLightIndex].localToWorldMatrix;
                 material.SetMatrix("_MainLightDirection", sunMatrix);
-                // material.SetMatrix("_CamToWorld", renderingData.cameraData.camera.cameraToWorldMatrix);
                 
                 cmd.Blit(source, tempTexture.Identifier());
                 cmd.Blit(tempTexture.Identifier(), source, material, 0);
