@@ -23,6 +23,24 @@ MonoBehaviour:
     range: 1
     shader: {fileID: 4800000, guid: 61c74b9aee9124d7b9d0fbca568be615, type: 3}
     renderPassEvent: 600
+--- !u!114 &-4401229794358412074
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6376810b8ef6540709c7736a76d04e5d, type: 3}
+  m_Name: Underwater Sun Shafts
+  m_EditorClassIdentifier: 
+  m_Active: 0
+  settings:
+    intensity: 0.56
+    amplitude: 3.63
+    shader: {fileID: 4800000, guid: 3da316275c2634c65ae4132b052d50aa, type: 3}
+    renderPassEvent: 600
 --- !u!114 &-2833551049352795535
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -40,7 +58,7 @@ MonoBehaviour:
     noise:
       scale: 20
     intensity: 0.24
-    speed: 1.68
+    speed: 2.47
     shader: {fileID: 4800000, guid: d62561ebf75304669a55f4a6c8a22102, type: 3}
     renderPassEvent: 550
 --- !u!114 &-352915259991466663
@@ -58,7 +76,6 @@ MonoBehaviour:
   m_Active: 1
   settings:
     horizonLine: 0
-    shader: {fileID: 4800000, guid: 9aba60f5126de4c3486927b80f9d1cbc, type: 3}
     renderPassEvent: 550
 --- !u!114 &11400000
 MonoBehaviour:
@@ -80,7 +97,8 @@ MonoBehaviour:
   - {fileID: -2833551049352795535}
   - {fileID: -6212919496298283212}
   - {fileID: 7897639110870892662}
-  m_RendererFeatureMap: 59dd64dc70311afb712a645a5534add834bf0ab5a246c7a97600b187ed0c9a6d
+  - {fileID: -4401229794358412074}
+  m_RendererFeatureMap: 59dd64dc70311afb712a645a5534add834bf0ab5a246c7a97600b187ed0c9a6dd6bc661cd2b0ebc2
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
@@ -134,7 +152,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Active: 1
   settings:
-    fogColor: {r: 0.06541474, g: 0.55373144, b: 0.6603774, a: 1}
-    vision: 25
+    fogColor: {r: 0, g: 0.33053163, b: 0.4433962, a: 1}
+    vision: 20
     shader: {fileID: 4800000, guid: b4f727489374247aabfffdfd2d090876, type: 3}
     renderPassEvent: 600

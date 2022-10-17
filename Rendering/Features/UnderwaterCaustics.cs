@@ -69,12 +69,12 @@ public class UnderwaterCaustics : ScriptableRendererFeature
             CommandBuffer cmd = CommandBufferPool.Get(profilerTag);
             cmd.Clear();
 
-            Material material = new Material(settings.shader);
-
             //it is very important that if something fails our code still calls 
             //CommandBufferPool.Release(cmd) or we will have a HUGE memory leak
             try
             {
+                Material material = new Material(settings.shader);
+                
                 material.SetTexture("_Caustics", settings.caustics.texture);
                 material.SetFloat("speed", settings.caustics.speed);
                 material.SetFloat("tiling", settings.caustics.tiling);

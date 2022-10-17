@@ -57,12 +57,12 @@ public class UnderwaterFog : ScriptableRendererFeature
             CommandBuffer cmd = CommandBufferPool.Get(profilerTag);
             cmd.Clear();
 
-            Material material = new Material(settings.shader);
-
             //it is very important that if something fails our code still calls 
             //CommandBufferPool.Release(cmd) or we will have a HUGE memory leak
             try
             {
+                Material material = new Material(settings.shader);
+                
                 material.SetColor("_FogColor", settings.fogColor);
                 material.SetFloat("_Vision", settings.vision);
                 

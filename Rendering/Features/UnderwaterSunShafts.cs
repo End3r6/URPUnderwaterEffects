@@ -2,21 +2,13 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
-public class UnderwaterRefraction : ScriptableRendererFeature
+public class UnderwaterSunShafts : ScriptableRendererFeature
 {
     [System.Serializable]
     public class Settings
     {
-        [System.Serializable]
-        public class Noise
-        {
-            public float scale;
-        }
-
-        public Noise noise = new Noise();
-
         public float intensity;
-        public float speed;
+        public float amplitude;
 
         //future settings
         public Shader shader;
@@ -70,11 +62,10 @@ public class UnderwaterRefraction : ScriptableRendererFeature
             try
             {
                 Material material = new Material(settings.shader);
-                
-                material.SetFloat("scale", settings.noise.scale);
-                material.SetFloat("speed", settings.speed);
+
                 material.SetFloat("intensity", settings.intensity);
-                
+                material.SetFloat("amplitude", settings.amplitude);
+
                 cmd.Blit(source, tempTexture.Identifier());
                 cmd.Blit(tempTexture.Identifier(), source, material, 0);
 
@@ -84,7 +75,6 @@ public class UnderwaterRefraction : ScriptableRendererFeature
             {
                 Debug.LogError($"An error has occured in {profilerTag}");
             }
-
             cmd.Clear();
             CommandBufferPool.Release(cmd);
         }
@@ -94,8 +84,8 @@ public class UnderwaterRefraction : ScriptableRendererFeature
     RenderTargetHandle renderTextureHandle;
     public override void Create()
     {
-        pass = new Pass("Underwater Refraction");
-        name = "Underwater Refraction";
+        pass = new Pass("Underwater Sun Shafts");
+        name = "Underwater Sun Shafts";
         pass.settings = settings;
         pass.renderPassEvent = settings.renderPassEvent;
     }

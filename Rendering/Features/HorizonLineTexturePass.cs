@@ -13,7 +13,6 @@ public class HorizonLineTexturePass : ScriptableRendererFeature
         public float horizonLine;
 
         //future settings
-        public Shader shader;
         public RenderPassEvent renderPassEvent = RenderPassEvent.AfterRenderingPostProcessing;
     }
 
@@ -75,15 +74,15 @@ public class HorizonLineTexturePass : ScriptableRendererFeature
             CommandBuffer cmd = CommandBufferPool.Get(profilerTag);
             cmd.ClearRenderTarget(true, false, Color.black);
 
-            Material material = new Material(settings.shader);
-
-            Material waterPlaneMat = new Material(Shader.Find("Hidden/White"));
-            Material backFaceMat = new Material(Shader.Find("Hidden/BlackUnder"));
-
             //it is very important that if something fails our code still calls 
             //CommandBufferPool.Release(cmd) or we will have a HUGE memory leak
             try
             {
+                Material material = new Material(Shader.Find("Hidden/HorizonLine"));
+
+                Material waterPlaneMat = new Material(Shader.Find("Hidden/White"));
+                Material backFaceMat = new Material(Shader.Find("Hidden/BlackUnder"));
+
                 material.SetFloat("_HorizonLine", settings.horizonLine);
 
                 cmd.Blit(tempTexture.Identifier(), horizonTexture.Identifier(), material, 0);
