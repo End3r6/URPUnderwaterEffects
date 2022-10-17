@@ -64,7 +64,7 @@ Shader "Hidden/HorizonLine"
                 return o;
             }
 
-            float3 frag (v2f i) : SV_Target
+            float frag (v2f i) : SV_Target
             {
                 float col = 1;
 

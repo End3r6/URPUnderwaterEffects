@@ -52,7 +52,7 @@ public class HorizonLineTexturePass : ScriptableRendererFeature
         public override void Configure(CommandBuffer cmd, RenderTextureDescriptor cameraTextureDescriptor)
         {
             //R8 has noticeable banding
-            cameraTextureDescriptor.colorFormat = RenderTextureFormat.R16;
+            cameraTextureDescriptor.colorFormat = RenderTextureFormat.ARGB32;
             
             //we dont need to resolve AA in every single Blit
             cameraTextureDescriptor.msaaSamples = 1;

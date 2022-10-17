@@ -35,10 +35,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6376810b8ef6540709c7736a76d04e5d, type: 3}
   m_Name: Underwater Sun Shafts
   m_EditorClassIdentifier: 
-  m_Active: 0
+  m_Active: 1
   settings:
-    intensity: 0.56
-    amplitude: 3.63
+    downsampling: 4
+    stage: 2
+    rayMap: {fileID: 2800000, guid: 82a7581d1f8a7408c97dfa1ae755b054, type: 3}
+    tint: {r: 0.6710573, g: 0.97789586, b: 0.9811321, a: 1}
+    intensity: 3
+    scattering: 0
+    threshold: 0.22
+    scale: 50
+    speed: 1
+    steps: 20
+    maxDistance: 75
+    jitter: 250
+    gaussBlur:
+      amount: 3
+      samples: 3
     shader: {fileID: 4800000, guid: 3da316275c2634c65ae4132b052d50aa, type: 3}
     renderPassEvent: 600
 --- !u!114 &-2833551049352795535
@@ -94,11 +107,11 @@ MonoBehaviour:
       type: 3}
   m_RendererFeatures:
   - {fileID: -352915259991466663}
-  - {fileID: -2833551049352795535}
   - {fileID: -6212919496298283212}
+  - {fileID: -2833551049352795535}
   - {fileID: 7897639110870892662}
   - {fileID: -4401229794358412074}
-  m_RendererFeatureMap: 59dd64dc70311afb712a645a5534add834bf0ab5a246c7a97600b187ed0c9a6dd6bc661cd2b0ebc2
+  m_RendererFeatureMap: 59dd64dc70311afb34bf0ab5a246c7a9712a645a5534add87600b187ed0c9a6dd6bc661cd2b0ebc2
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
