@@ -77,7 +77,7 @@ Shader "Hidden/UnderwaterFog"
 
                 float3 aboveWater = col * waterMask;
 
-                float3 color = _FogColor.rgb * (1 - waterMask);
+                float3 color = _FogColor.rgb * (_MainLightColor) * (1 - waterMask);
 
                 float3 finalColor = color + aboveWater;
 
