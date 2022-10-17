@@ -70,7 +70,7 @@ MonoBehaviour:
   settings:
     noise:
       scale: 20
-    intensity: 0.24
+    intensity: 0.2
     speed: 2.47
     shader: {fileID: 4800000, guid: d62561ebf75304669a55f4a6c8a22102, type: 3}
     renderPassEvent: 550
