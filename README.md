@@ -7,7 +7,7 @@ Download the files by clicking the green Code button on the top right corner of 
 # How to use
 In your URP render settings, click add feature and choose Horizon Line Texture and 
 any of the additional effects shown. Set the Horizon Line Texture render pass event to before post processing and set 
-the additional effect's render pass events to after post processing. It should work after that.
+the additional effect's render pass events to before post processing. Make sure that the horizon texture pass is the first pass called. It should work after that.
 
 If you are using hlsl (urp shader code), make sure your shader has the following snippet in the pass or subshader blocks.
 
