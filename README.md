@@ -4,7 +4,7 @@ An implementation of underwater effects that show under the water line.
 # Instalation
 Download the files by clicking the green Code button on the top right corner of this repo. Extract the zip file and drag the folder into your assets of your unity project.
 
-# Usage
+# Legal Stuff
 Feel free to use this in anything commercial or personal. Credit would be greatly appreciated but isn't required.
 
 # How to use
