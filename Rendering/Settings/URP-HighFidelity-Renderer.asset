@@ -50,7 +50,7 @@ MonoBehaviour:
     maxDistance: 75
     jitter: 250
     gaussBlur:
-      amount: 3
+      amount: 4
       samples: 3
     shader: {fileID: 4800000, guid: 3da316275c2634c65ae4132b052d50aa, type: 3}
     renderPassEvent: 600
