@@ -161,7 +161,7 @@ Shader "WorldsEndWater/Water"
             }
 
             float4 frag(v2f i) : SV_TARGET
-            {
+            {                
                 float4 normalMap;
                 InitializeFragmentNormal(i, normalMap);
 
@@ -209,7 +209,7 @@ Shader "WorldsEndWater/Water"
                 lightInput.shadowCoord = TransformWorldToShadowCoord(i.positionWS);
                 
                 SurfaceData surfaceData = (SurfaceData)0;
-                surfaceData.albedo = color.rgb + caustics + (opaqueTexture * 0.2);
+                surfaceData.albedo = (color.rgb + caustics + (opaqueTexture * 0.2));
                 surfaceData.alpha = color.a;
 
                 surfaceData.specular = _SpecularTint;

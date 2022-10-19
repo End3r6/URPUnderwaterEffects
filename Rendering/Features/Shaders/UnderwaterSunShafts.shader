@@ -380,7 +380,9 @@ Shader "Hidden/UnderwaterSunShafts"
 
             real3 frag (v2f i) : SV_Target
             {
-                _SunMoonColor = _MainLightColor * _Tint;
+                half3 skyColor = half3(unity_SHAr.w, unity_SHAg.w, unity_SHAb.w);
+
+                _SunMoonColor = _MainLightColor * _Tint * float4(skyColor, 1);
                 real col = 0;
 
                 int offset =0;

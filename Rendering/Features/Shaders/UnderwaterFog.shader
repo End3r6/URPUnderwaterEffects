@@ -65,6 +65,8 @@ Shader "Hidden/UnderwaterFog"
 
             float4 frag (v2f i) : SV_Target
             {
+                half3 skyColor = half3(unity_SHAr.w, unity_SHAg.w, unity_SHAb.w);
+
                 float3 col = tex2D(_MainTex, i.uv);
 
                 float waterLineMask = SAMPLE_TEXTURE2D(_HorizonLineTexture, sampler_HorizonLineTexture, i.uv).r;
@@ -77,7 +79,7 @@ Shader "Hidden/UnderwaterFog"
 
                 float3 aboveWater = col * waterMask;
 
-                float3 color = _FogColor.rgb * (_MainLightColor) * (1 - waterMask);
+                float3 color = _FogColor.rgb * ((_MainLightColor) * (skyColor)) * (1 - waterMask);
 
                 float3 finalColor = color + aboveWater;
 

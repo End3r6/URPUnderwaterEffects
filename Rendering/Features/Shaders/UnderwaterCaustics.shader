@@ -67,6 +67,7 @@ Shader "Hidden/UnderwaterCaustics"
 
             float4 frag (v2f i) : SV_Target
             {
+                half3 skyColor = half3(unity_SHAr.w, unity_SHAg.w, unity_SHAb.w);
                 float2 positionNDC = i.vertex.xy / _ScaledScreenParams.xy;
 
                 // sample scene depth using screen-space coordinates
@@ -94,7 +95,7 @@ Shader "Hidden/UnderwaterCaustics"
                     half4 tex1 = SampleCaustics(uv1, RGBSplit / 100);
                     half4 tex2 = SampleCaustics(uv2, RGBSplit / 100);
 
-                    caustics = min(tex1, tex2) * (1 - waterLineMask) * -intensity;
+                    caustics = min(tex1, tex2) * (1 - waterLineMask) * -intensity * float4(skyColor, 1);
                 }
 
                 float4 col = tex2D(_MainTex, i.uv);

@@ -21,8 +21,7 @@ MonoBehaviour:
       tiling: 11.72
     intensity: 15.33
     range: 1
-    shader: {fileID: 4800000, guid: 61c74b9aee9124d7b9d0fbca568be615, type: 3}
-    renderPassEvent: 600
+    renderPassEvent: 550
 --- !u!114 &-4401229794358412074
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -40,8 +39,8 @@ MonoBehaviour:
     downsampling: 4
     stage: 2
     rayMap: {fileID: 2800000, guid: 82a7581d1f8a7408c97dfa1ae755b054, type: 3}
-    tint: {r: 0.6710573, g: 0.97789586, b: 0.9811321, a: 1}
-    intensity: 3
+    tint: {r: 0.75, g: 0.9968355, b: 1, a: 1}
+    intensity: 4
     scattering: 0
     threshold: 0.22
     scale: 50
@@ -50,10 +49,9 @@ MonoBehaviour:
     maxDistance: 75
     jitter: 250
     gaussBlur:
-      amount: 4
-      samples: 3
-    shader: {fileID: 4800000, guid: 3da316275c2634c65ae4132b052d50aa, type: 3}
-    renderPassEvent: 600
+      amount: 3
+      samples: 2
+    renderPassEvent: 550
 --- !u!114 &-2833551049352795535
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -72,7 +70,6 @@ MonoBehaviour:
       scale: 20
     intensity: 0.2
     speed: 2.47
-    shader: {fileID: 4800000, guid: d62561ebf75304669a55f4a6c8a22102, type: 3}
     renderPassEvent: 550
 --- !u!114 &-352915259991466663
 MonoBehaviour:
@@ -107,11 +104,11 @@ MonoBehaviour:
       type: 3}
   m_RendererFeatures:
   - {fileID: -352915259991466663}
-  - {fileID: -6212919496298283212}
   - {fileID: -2833551049352795535}
+  - {fileID: -6212919496298283212}
   - {fileID: 7897639110870892662}
   - {fileID: -4401229794358412074}
-  m_RendererFeatureMap: 59dd64dc70311afb34bf0ab5a246c7a9712a645a5534add87600b187ed0c9a6dd6bc661cd2b0ebc2
+  m_RendererFeatureMap: 59dd64dc70311afb712a645a5534add834bf0ab5a246c7a97600b187ed0c9a6dd6bc661cd2b0ebc2
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
@@ -165,7 +162,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Active: 1
   settings:
-    fogColor: {r: 0, g: 0.33053163, b: 0.4433962, a: 1}
+    fogColor: {r: 0, g: 0.7710247, b: 0.8867924, a: 1}
     vision: 20
-    shader: {fileID: 4800000, guid: b4f727489374247aabfffdfd2d090876, type: 3}
-    renderPassEvent: 600
+    renderPassEvent: 550

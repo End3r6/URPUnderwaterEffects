@@ -1,4 +1,4 @@
-Shader "Hidden/UnderwaterFog"
+Shader "Hidden/UnderwaterRefraction"
 {
     Properties
     {
@@ -11,6 +11,15 @@ Shader "Hidden/UnderwaterFog"
 
         Pass
         {
+            // Blend SrcAlpha OneMinusSrcAlpha
+
+            // Tags
+            // {
+            //     "Queue" = "Transparent" 
+            //     "RenderType" = "Transparent" 
+            //     "RenderPipeline" = "UniversalRenderPipeline"
+            // }
+
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
@@ -68,7 +77,7 @@ Shader "Hidden/UnderwaterFog"
                 float waterLineMask = SAMPLE_TEXTURE2D(_HorizonLineTexture, sampler_HorizonLineTexture, i.uv).r;
                 float2 noise = NormalFromHeight(GradientNoise(i.uv + (_Time.y * (speed / 100)), scale), intensity);
 
-                float refColor = tex2D(_MainTex, i.uv + noise) * (1 - waterLineMask);
+                float3 refColor = tex2D(_MainTex, i.uv + noise) * (1 - waterLineMask);
 
                 float3 aboveWater = col * waterLineMask;
 

@@ -153,7 +153,7 @@ Material:
     - _SeaDepth: 18.24
     - _SmallWaveSpeed: 1
     - _SmallWavesAmount: 0.2
-    - _Smoothness: 0.734
+    - _Smoothness: 1
     - _SmoothnessTextureChannel: 0
     - _SpecBumpHeight: 1.5
     - _SpecBumpScale: 34.5

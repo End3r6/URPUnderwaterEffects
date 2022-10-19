@@ -50,7 +50,6 @@ public class UnderwaterSunShafts : ScriptableRendererFeature
 
         [Space(10)]
         [Header("Initialization")]
-        public Shader shader;
         public RenderPassEvent renderPassEvent = RenderPassEvent.AfterRenderingPostProcessing;
     }
 
@@ -126,7 +125,7 @@ public class UnderwaterSunShafts : ScriptableRendererFeature
             //CommandBufferPool.Release(cmd) or we will have a HUGE memory leak
             try
             {
-                Material material = new Material(settings.shader);
+                Material material = new Material(Shader.Find("Hidden/UnderwaterSunShafts"));
 
                 material.SetFloat("_Scattering", settings.scattering);
                 material.SetFloat("_Threshold", settings.threshold);

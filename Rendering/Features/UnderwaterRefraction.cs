@@ -19,7 +19,6 @@ public class UnderwaterRefraction : ScriptableRendererFeature
         public float speed;
 
         //future settings
-        public Shader shader;
         public RenderPassEvent renderPassEvent = RenderPassEvent.AfterRenderingPostProcessing;
     }
 
@@ -69,7 +68,7 @@ public class UnderwaterRefraction : ScriptableRendererFeature
             //CommandBufferPool.Release(cmd) or we will have a HUGE memory leak
             try
             {
-                Material material = new Material(settings.shader);
+                Material material = new Material(Shader.Find("Hidden/UnderwaterRefraction"));
                 
                 material.SetFloat("scale", settings.noise.scale);
                 material.SetFloat("speed", settings.speed);

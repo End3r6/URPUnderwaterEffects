@@ -11,7 +11,6 @@ public class UnderwaterFog : ScriptableRendererFeature
         public float vision;
 
         //future settings
-        public Shader shader;
         public RenderPassEvent renderPassEvent = RenderPassEvent.AfterRenderingPostProcessing;
     }
 
@@ -61,7 +60,7 @@ public class UnderwaterFog : ScriptableRendererFeature
             //CommandBufferPool.Release(cmd) or we will have a HUGE memory leak
             try
             {
-                Material material = new Material(settings.shader);
+                Material material = new Material(Shader.Find("Hidden/UnderwaterFog"));
                 
                 material.SetColor("_FogColor", settings.fogColor);
                 material.SetFloat("_Vision", settings.vision);

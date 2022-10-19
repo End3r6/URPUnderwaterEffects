@@ -23,7 +23,6 @@ public class UnderwaterCaustics : ScriptableRendererFeature
         public float range;
 
         //future settings
-        public Shader shader;
         public RenderPassEvent renderPassEvent = RenderPassEvent.AfterRenderingPostProcessing;
     }
 
@@ -73,7 +72,7 @@ public class UnderwaterCaustics : ScriptableRendererFeature
             //CommandBufferPool.Release(cmd) or we will have a HUGE memory leak
             try
             {
-                Material material = new Material(settings.shader);
+                Material material = new Material(Shader.Find("Hidden/UnderwaterCaustics"));
                 
                 material.SetTexture("_Caustics", settings.caustics.texture);
                 material.SetFloat("speed", settings.caustics.speed);
