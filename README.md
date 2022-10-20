@@ -38,6 +38,7 @@ If you wish to add more effects on top of the existing ones, you need to sample 
 * [x] Sunrays
 * [ ] Better Waterline Transition
 * [ ] Bubbles
+* [ ] Convert Effects to Post Processing Instead of Render Passes
 
 # Maybe (Doesn't seem to fit the vfx theme of this project)
 * [ ] Plants
