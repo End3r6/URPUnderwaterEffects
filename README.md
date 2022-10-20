@@ -37,6 +37,13 @@ If you wish to add more effects on top of the existing ones, you need to sample 
 * [x] Distortion
 * [x] Sunrays
 * [ ] Better Waterline Transition
+* [ ] Bubbles
+
+# Maybe (Doesn't seem to fit the vfx theme of this project)
+* [ ] Plants
+* [ ] Rocks
+* [ ] Sand Textures
+* [ ] Fish
 
 # Cotributions
 If you wish to contriubute to this repo, feel free to make a pull request.
