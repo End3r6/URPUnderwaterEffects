@@ -28,7 +28,7 @@ public class HorizonLineTexturePass : ScriptableRendererFeature
 
         private static readonly ShaderTagId shaderTag = new ShaderTagId("UniversalForward");
 
-        private FilteringSettings filteringSettings = new FilteringSettings(RenderQueueRange.transparent);
+        private FilteringSettings filteringSettings = new FilteringSettings(RenderQueueRange.all);
 
         private string profilerTag;
 
@@ -86,8 +86,8 @@ public class HorizonLineTexturePass : ScriptableRendererFeature
 
                 context.ExecuteCommandBuffer(cmd);
 
-                DrawingSettings drawSettings = CreateDrawingSettings(shaderTag, ref renderingData, SortingCriteria.CommonTransparent);
-                DrawingSettings drawSettingsUnder = CreateDrawingSettings(shaderTag, ref renderingData, SortingCriteria.CommonTransparent);
+                DrawingSettings drawSettings = CreateDrawingSettings(shaderTag, ref renderingData, SortingCriteria.BackToFront);
+                DrawingSettings drawSettingsUnder = CreateDrawingSettings(shaderTag, ref renderingData, SortingCriteria.BackToFront);
 
                 drawSettings.overrideMaterial = waterPlaneMat;
                 drawSettingsUnder.overrideMaterial = backFaceMat;
