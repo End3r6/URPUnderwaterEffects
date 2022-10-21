@@ -13,12 +13,6 @@ any of the additional effects shown. Make sure that the horizon texture pass is 
 # Extenstion
 If you wish to add more effects on top of the existing ones, you need to sample the _HorizonLineTexture. This lets you seperate the waterline from the air above the water.
 
-# Roadmap
-* [x] Caustics
-* [x] Distortion
-* [x] Sunrays
-* [x] Bubbles
-
 # Cotributions
 If you wish to contriubute to this repo, feel free to make a pull request.
 
