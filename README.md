@@ -1,22 +1,19 @@
 # URPUnderwaterEffects
 An implementation of underwater effects that show under the water line.
 
+# Demo
+![Showcase Gif](https://github.com/End3r6/URPUnderwaterEffects/blob/master/GIF/Shot_02.gif)
+
 # How to use
+Download the latest release or download from the green code button.
 
-Download the lates release or download from the green code button.
+All effects are render features, so just add the one you want. The Horizon Line Feature needs to be the first one called.
 
-## Make sure that your water plane has the HorizonLineDraw layer (case sensitive).
-
-In your URP render settings, click add feature and choose Horizon Line Texture and 
-any of the additional effects shown. Make sure that the horizon texture pass is the first pass called. It should work after that.
+# Other Effects
+Bubbles are included, they are a particle prefab.
 
 # Extenstion
 If you wish to add more effects on top of the existing ones, you need to sample the _HorizonLineTexture. This lets you seperate the waterline from the air above the water.
 
 # Cotributions
 If you wish to contriubute to this repo, feel free to make a pull request.
-
-# Demo
-![Distortion](https://github.com/End3r6/URPUnderwaterEffects/blob/master/Screenshots/DistortionShowcase.png)
-![Caustics](https://github.com/End3r6/URPUnderwaterEffects/blob/master/Screenshots/Showcase.png)
-![Sunrays](https://github.com/End3r6/URPUnderwaterEffects/blob/master/Screenshots/Sunrays.png)
