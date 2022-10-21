@@ -12,6 +12,8 @@ In your URP render settings, click add feature and choose Horizon Line Texture a
 any of the additional effects shown. Set the Horizon Line Texture render pass event to before post processing and set 
 the additional effect's render pass events to before post processing. Make sure that the horizon texture pass is the first pass called. It should work after that.
 
+Make sure that your water plane has the HorizonLineDraw layer (case sensitive).
+
 If you are using hlsl (urp shader code), make sure your shader has the following snippet in the pass or subshader blocks.
 
 ```hlsl
@@ -37,7 +39,7 @@ If you wish to add more effects on top of the existing ones, you need to sample 
 * [x] Distortion
 * [x] Sunrays
 * [ ] Better Waterline Transition
-* [ ] Bubbles
+* [x] Bubbles
 * [ ] Convert Effects to Post Processing Instead of Render Passes
 
 # Maybe (Doesn't seem to fit the vfx theme of this project)
