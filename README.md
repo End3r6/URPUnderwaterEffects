@@ -3,7 +3,6 @@ An implementation of underwater effects that show under the water line.
 
 # Demo
 ![Showcase Gif](https://github.com/End3r6/URPUnderwaterEffects/blob/master/GIF/Shot_02.gif)
-![Sunrays](https://github.com/End3r6/URPUnderwaterEffects/blob/master/Screenshots/Sunrays.png)
 
 # How to use
 
