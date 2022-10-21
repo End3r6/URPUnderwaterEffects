@@ -10,6 +10,7 @@ public class HorizonLineTexturePass : ScriptableRendererFeature
     [System.Serializable]
     public class Settings
     {
+        public LayerMask drawMask;
         public float horizonLine;
 
         //future settings
@@ -92,7 +93,7 @@ public class HorizonLineTexturePass : ScriptableRendererFeature
                 drawSettings.overrideMaterial = waterPlaneMat;
                 drawSettingsUnder.overrideMaterial = backFaceMat;
 
-                filteringSettings.layerMask = LayerMask.GetMask("HorizonLineDraw");
+                filteringSettings.layerMask = settings.drawMask;
 
                 context.DrawRenderers(renderingData.cullResults, ref drawSettings, ref filteringSettings);
                 context.DrawRenderers(renderingData.cullResults, ref drawSettingsUnder, ref filteringSettings);
