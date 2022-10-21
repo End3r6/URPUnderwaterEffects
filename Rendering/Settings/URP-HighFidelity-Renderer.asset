@@ -1,5 +1,18 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-7687569878842608798
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e393755c67da4febaa0c230876d58c3, type: 3}
+  m_Name: Underwater Fog Renderer
+  m_EditorClassIdentifier: 
+  m_Active: 1
 --- !u!114 &-6212919496298283212
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -86,7 +99,7 @@ MonoBehaviour:
   m_Active: 1
   settings:
     horizonLine: 0
-    renderPassEvent: 550
+    renderPassEvent: 450
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -106,9 +119,9 @@ MonoBehaviour:
   - {fileID: -352915259991466663}
   - {fileID: -2833551049352795535}
   - {fileID: -6212919496298283212}
-  - {fileID: 7897639110870892662}
+  - {fileID: 7306593018575115887}
   - {fileID: -4401229794358412074}
-  m_RendererFeatureMap: 59dd64dc70311afb712a645a5534add834bf0ab5a246c7a97600b187ed0c9a6dd6bc661cd2b0ebc2
+  m_RendererFeatureMap: 59dd64dc70311afb712a645a5534add834bf0ab5a246c7a96fd6846ea33b6665d6bc661cd2b0ebc2
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
@@ -148,6 +161,23 @@ MonoBehaviour:
   m_ClusteredRendering: 0
   m_TileSize: 32
   m_IntermediateTextureMode: 1
+--- !u!114 &7306593018575115887
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2cc2ac6cac4d40e18e13d0b9d0fac79, type: 3}
+  m_Name: Underwater Fog
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  settings:
+    fogColor: {r: 0, g: 1, b: 0.94843197, a: 1}
+    vision: 20
+    renderPassEvent: 550
 --- !u!114 &7897639110870892662
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -162,6 +192,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Active: 1
   settings:
-    fogColor: {r: 0, g: 0.7710247, b: 0.8867924, a: 1}
+    fogColor: {r: 0.14489143, g: 0.6498781, b: 0.8301887, a: 1}
     vision: 20
     renderPassEvent: 550

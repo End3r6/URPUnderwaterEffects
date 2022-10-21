@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b2db86121404754db890f4c8dfe81b2, type: 3}
   m_Name: Bloom
   m_EditorClassIdentifier: 
-  active: 0
+  active: 1
   threshold:
     m_OverrideState: 1
-    m_Value: 1
+    m_Value: 0.86
   intensity:
     m_OverrideState: 1
     m_Value: 1
@@ -53,7 +53,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 899c54efeace73346a0a16faa3afe726, type: 3}
   m_Name: Vignette
   m_EditorClassIdentifier: 
-  active: 0
+  active: 1
   color:
     m_OverrideState: 0
     m_Value: {r: 0, g: 0, b: 0, a: 1}
@@ -69,6 +69,30 @@ MonoBehaviour:
   rounded:
     m_OverrideState: 0
     m_Value: 0
+--- !u!114 &-3397612579736113895
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bdc5af311222a479c8b374f0cce98441, type: 3}
+  m_Name: UnderwaterFog
+  m_EditorClassIdentifier: 
+  active: 1
+  <displayName>k__BackingField: 
+  tint:
+    m_OverrideState: 1
+    m_Value:
+      r: 0
+      g: 0.7490196
+      b: 0.69411767
+      a: 1
+  vision:
+    m_OverrideState: 1
+    m_Value: 20
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -97,7 +121,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97c23e3b12dc18c42a140437e53d3951, type: 3}
   m_Name: Tonemapping
   m_EditorClassIdentifier: 
-  active: 0
+  active: 1
   mode:
     m_OverrideState: 1
     m_Value: 1
+--- !u!114 &3541991744167246542
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cceb18070a834d2899e83592e4f86c3, type: 3}
+  m_Name: UnderwaterFogPP
+  m_EditorClassIdentifier: 
+  active: 1
+  <displayName>k__BackingField: 
+  tint:
+    m_OverrideState: 1
+    m_Value:
+      r: 0
+      g: 1
+      b: 0.90529466
+      a: 0
+  vision:
+    m_OverrideState: 1
+    m_Value: 20

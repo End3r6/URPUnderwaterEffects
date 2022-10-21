@@ -26,7 +26,7 @@ public class HorizonLineTexturePass : ScriptableRendererFeature
         RenderTargetHandle horizonTexture;
         RenderTargetHandle tempTexture;
 
-        private readonly List<ShaderTagId> shaderTagIdList = new List<ShaderTagId>();
+        private static readonly ShaderTagId shaderTag = new ShaderTagId("UniversalForward");
 
         private FilteringSettings filteringSettings = new FilteringSettings(RenderQueueRange.transparent);
 
@@ -42,11 +42,6 @@ public class HorizonLineTexturePass : ScriptableRendererFeature
             this.profilerTag = profilerTag;
 
             horizonTexture.Init("_HorizonLineTexture");
-
-            shaderTagIdList.Add(new ShaderTagId("UniversalForward"));
-            shaderTagIdList.Add(new ShaderTagId("UniversalForwardOnly"));
-            shaderTagIdList.Add(new ShaderTagId("SRPDefaultUnlit"));
-            // shaderTagIdList.Add(new ShaderTagId("Always"));
         }
 
         public override void Configure(CommandBuffer cmd, RenderTextureDescriptor cameraTextureDescriptor)
@@ -91,11 +86,13 @@ public class HorizonLineTexturePass : ScriptableRendererFeature
 
                 context.ExecuteCommandBuffer(cmd);
 
-                DrawingSettings drawSettings = CreateDrawingSettings(shaderTagIdList, ref renderingData, SortingCriteria.CommonOpaque);
-                DrawingSettings drawSettingsUnder = CreateDrawingSettings(shaderTagIdList, ref renderingData, SortingCriteria.CommonOpaque);
+                DrawingSettings drawSettings = CreateDrawingSettings(shaderTag, ref renderingData, SortingCriteria.CommonTransparent);
+                DrawingSettings drawSettingsUnder = CreateDrawingSettings(shaderTag, ref renderingData, SortingCriteria.CommonTransparent);
 
                 drawSettings.overrideMaterial = waterPlaneMat;
                 drawSettingsUnder.overrideMaterial = backFaceMat;
+
+                filteringSettings.layerMask = LayerMask.GetMask("HorizonLineDraw");
 
                 context.DrawRenderers(renderingData.cullResults, ref drawSettings, ref filteringSettings);
                 context.DrawRenderers(renderingData.cullResults, ref drawSettingsUnder, ref filteringSettings);

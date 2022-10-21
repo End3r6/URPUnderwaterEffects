@@ -11,7 +11,7 @@ public class UnderwaterFog : ScriptableRendererFeature
         public float vision;
 
         //future settings
-        public RenderPassEvent renderPassEvent = RenderPassEvent.AfterRenderingPostProcessing;
+        public RenderPassEvent renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing;
     }
 
     public Settings settings = new Settings();

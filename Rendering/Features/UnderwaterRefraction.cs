@@ -19,7 +19,7 @@ public class UnderwaterRefraction : ScriptableRendererFeature
         public float speed;
 
         //future settings
-        public RenderPassEvent renderPassEvent = RenderPassEvent.AfterRenderingPostProcessing;
+        public RenderPassEvent renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing;
     }
 
     public Settings settings = new Settings();

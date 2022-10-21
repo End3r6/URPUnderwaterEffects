@@ -50,7 +50,7 @@ public class UnderwaterSunShafts : ScriptableRendererFeature
 
         [Space(10)]
         [Header("Initialization")]
-        public RenderPassEvent renderPassEvent = RenderPassEvent.AfterRenderingPostProcessing;
+        public RenderPassEvent renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing;
     }
 
     public Settings settings = new Settings();

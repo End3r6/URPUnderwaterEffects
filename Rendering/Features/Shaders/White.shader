@@ -14,13 +14,5 @@ Shader "Hidden/White"
             Cull Back
             Color(1, 1, 1, 1)
         }
-
-        Pass 
-        {
-            Tags { "RenderType" = "Opaque" }
-            Fog {Mode Off}
-            Cull Front
-            Color(0, 0, 0, 0)
-        }
     }
 }
