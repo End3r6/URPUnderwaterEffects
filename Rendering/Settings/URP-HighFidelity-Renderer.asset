@@ -98,7 +98,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Active: 1
   settings:
-    horizonLine: 0
+    horizonLine: 24.67
     renderPassEvent: 450
 --- !u!114 &11400000
 MonoBehaviour:
