@@ -8,28 +8,13 @@ Download the files by clicking the green Code button on the top right corner of 
 Feel free to use this in anything commercial or personal. Credit would be greatly appreciated but isn't required.
 
 # How to use
-In your URP render settings, click add feature and choose Horizon Line Texture and 
-any of the additional effects shown. Set the Horizon Line Texture render pass event to before post processing and set 
-the additional effect's render pass events to before post processing. Make sure that the horizon texture pass is the first pass called. It should work after that.
 
 ## Make sure that your water plane has the HorizonLineDraw layer (case sensitive).
 
-If you are using hlsl (urp shader code), make sure your shader has the following snippet in the pass or subshader blocks.
+In your URP render settings, click add feature and choose Horizon Line Texture and 
+any of the additional effects shown. Make sure that the horizon texture pass is the first pass called. It should work after that.
 
-```hlsl
-Blend SrcAlpha OneMinusSrcAlpha
-LOD 300
 
-Tags
-{
-  "Queue" = "Transparent" 
-  "RenderType" = "Transparent" 
-  "RenderPipeline" = "UniversalRenderPipeline"
-}
-```
-
-If you are using shader graph, make sure your graph settings look like this:
-![Shader graph settings](https://github.com/End3r6/URPUnderwaterEffects/blob/master/Screenshots/ShaderGraphSettings.png)
 
 # Extenstion
 If you wish to add more effects on top of the existing ones, you need to sample the _HorizonLineTexture. This lets you seperate the waterline from the air above the water.
