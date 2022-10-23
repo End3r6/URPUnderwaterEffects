@@ -7,7 +7,7 @@ An implementation of underwater effects that show under the water line.
 # How to use
 Download the latest release or download from the green code button.
 
-All effects are render features, so just add the one you want. The Horizon Line Feature needs to be the first one called.
+All effects are render features, so just add the one you want. The Horizon Line Feature needs to be the first one called. In order for the effects to be drawn under the water, set a layer on the object and use that layer in the horizon pass.
 
 # Other Effects
 Bubbles are included, they are a particle prefab.
