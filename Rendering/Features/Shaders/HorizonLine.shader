@@ -64,9 +64,9 @@ Shader "Hidden/HorizonLine"
                 return o;
             }
 
-            float frag (v2f i) : SV_Target
+            float3 frag (v2f i) : SV_Target
             {
-                float col = 1;
+                float3 col = 1;
 
                 if(GetWorldPos(i.uv).y <= _HorizonLine)
                 {

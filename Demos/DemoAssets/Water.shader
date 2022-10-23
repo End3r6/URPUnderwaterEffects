@@ -115,7 +115,12 @@ Shader "WorldsEndWater/Water"
 
             void InitializeFragmentNormal(inout v2f i, inout float4 normals) 
             {
-                float4 normalMap = tex2D(_NormalWaves, float2(i.uv.x + (_Time.x * _BumpSpeed.x), i.uv.y + (_Time.y * _BumpSpeed.y))) * tex2D(_NormalWaves, float2(i.uv.x + (_Time.x * _BumpSpeed.z), i.uv.y + (_Time.y * _BumpSpeed.w)));
+                float4 normalMap = min
+                (
+                    tex2D(_NormalWaves, float2(i.uv.x + (_Time.x * _BumpSpeed.x), i.uv.y + (_Time.y * _BumpSpeed.y))),
+                    tex2D(_NormalWaves, float2(i.uv.x + (_Time.x * _BumpSpeed.z), i.uv.y + (_Time.y * _BumpSpeed.w)))
+                );
+                
                 i.normal.xy = normalMap.wy * 2 - 1;
                 i.normal.z = sqrt(1 - saturate(dot(i.normal.xy, i.normal.xy)));
 
