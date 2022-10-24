@@ -9,6 +9,9 @@ Download the latest release or download from the green code button.
 
 All effects are render features, so just add the one you want. The Horizon Line Feature needs to be the first one called. In order for the effects to be drawn under the water, set a layer on the object and use that layer in the horizon pass.
 
+# Note
+If you have the game view resolution set to low, it is possible there might be a gap between the water and the effects. This is fixed if you just set low res off in the game view settings.
+
 # Other Effects
 Bubbles are included, they are a particle prefab.
 
