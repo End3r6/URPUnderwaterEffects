@@ -5,7 +5,7 @@ An implementation of underwater effects that show under the water line.
 ![Showcase Gif](https://github.com/End3r6/URPUnderwaterEffects/blob/master/GIF/Shot_02.gif)
 
 # How to use
-Download the latest release or download from the green code button. The difference is that the releases are the latest stable versions of the tool while donwloading the source gives you the most updated version which is often buggy and experimental.
+Download the latest release or download from the green code button. The difference is that the releases are the latest stable versions of the tool while downloading the source gives you the most updated version which is often buggy and experimental.
 
 All effects are render features, so just add the one you want. The Horizon Line Feature needs to be the first one called. In order for the effects to be drawn under the water, set a layer on the object and use that layer in the horizon pass.
 
