@@ -55,7 +55,7 @@ MonoBehaviour:
     tint: {r: 0.75, g: 0.9968355, b: 1, a: 1}
     intensity: 4
     scattering: 0
-    threshold: 0.22
+    threshold: 0.25
     scale: 50
     speed: 1
     steps: 20
@@ -63,7 +63,7 @@ MonoBehaviour:
     jitter: 250
     gaussBlur:
       amount: 3
-      samples: 2
+      samples: 3
     renderPassEvent: 550
 --- !u!114 &-2833551049352795535
 MonoBehaviour:

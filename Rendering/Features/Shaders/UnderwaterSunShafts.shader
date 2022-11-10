@@ -63,7 +63,6 @@ Shader "Hidden/UnderwaterSunShafts"
             real _Scale;
             real _Speed;
 
-            //This function will tell us if a certain point in world space coordinates is in light or shadow of the main light
             real WaveAten(real3 worldPosition)
             {
                 return min
