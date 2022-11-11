@@ -20,7 +20,7 @@ All effects are render features, so just add the ones you want. The Horizon Line
 If you have the game view resolution set to low, it is possible there might be a gap between the water and the effects. This is fixed if you just set low res off in the game view settings.
 
 # Other Effects
-Bubbles are included, they are a particle prefab.
+Bubbles are included as a particle prefab.
 
 # Extenstion
 If you wish to add more effects on top of the existing ones, you need to sample the _HorizonLineTexture. This lets you seperate the waterline from the air above the water.
