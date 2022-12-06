@@ -38,6 +38,9 @@ If you have the game view resolution set to low, it is possible there might be a
 # Other Effects
 Bubbles are included as a particle prefab.
 
+# Known Issues
+- The fog doesn't draw transparent objects.
+
 # Extenstion
 If you wish to add more effects on top of the existing ones, you need to sample the _HorizonLineTexture. This lets you seperate the waterline from the air above the water.
 
