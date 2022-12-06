@@ -1,4 +1,10 @@
-# URPUnderwaterEffects
+<p align="center">
+  <img width="200" height="200" src="https://github.com/End3r6/URPUnderwaterEffects/blob/master/UnderwaterLogo.png">
+</p>
+
+<h1 align="center" style="bold">
+  URP Underwater Effects
+</h1>
 An implementation of underwater effects that show under the water line.
 
 # Demo
