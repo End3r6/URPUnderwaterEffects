@@ -2,6 +2,10 @@
   <img width="200" height="200" src="https://github.com/End3r6/URPUnderwaterEffects/blob/master/UnderwaterLogo.png">
 </p>
 
+<p align="center">
+  <img src="https://img.shields.io/badge/License-MIT-orange">
+</p>
+
 <h1 align="center" style="bold">
   URP Underwater Effects
 </h1>
