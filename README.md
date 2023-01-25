@@ -6,10 +6,6 @@
   <img src="https://img.shields.io/badge/License-MIT-orange">
 </p>
 
-<p align="center">
-  <img src="https://komarev.com/ghpvc/?username=end3r6">
-</p>
-
 <h1 align="center" style="bold">
   URP Underwater Effects
 </h1>
