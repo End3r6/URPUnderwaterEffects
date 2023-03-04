@@ -22,6 +22,12 @@
 </p>
 
 <h1 align="center">
+  Also
+</h1>
+
+I'd love to see what you are using this for. If you submit an issue with a couple screenshots or something I will try to make a section devoted to cool projects using this.
+
+<h1 align="center">
   How to use
 </h1>
 
