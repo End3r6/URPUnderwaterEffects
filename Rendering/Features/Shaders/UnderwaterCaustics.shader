@@ -28,7 +28,7 @@ Shader "Hidden/UnderwaterCaustics"
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Common.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
 
-            #include "Assets/BasicUnderwaterFog/Rendering/Features/Shaders/HLSL/Caustics.hlsl"
+            #include "./HLSL/Caustics.hlsl"
 
             struct appdata
             {
