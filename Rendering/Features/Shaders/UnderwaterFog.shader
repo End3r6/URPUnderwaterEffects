@@ -50,6 +50,9 @@ Shader "Hidden/UnderwaterFog"
 
             TEXTURE2D(_CameraDepthTexture);
             SAMPLER(sampler_CameraDepthTexture);
+            
+            TEXTURE2D(_TransparentDepth);
+            SAMPLER(sampler_TransparentDepth);
 
             TEXTURE2D(_HorizonLineTexture);
             SAMPLER(sampler_HorizonLineTexture);
@@ -84,6 +87,7 @@ Shader "Hidden/UnderwaterFog"
                 float3 finalColor = color + aboveWater;
 
                 return float4(finalColor, 1 - depth);
+                // return float4(waterLineMask.xxx, 1);
 
                 // return float4(depth, depth, depth, 1);
             }
