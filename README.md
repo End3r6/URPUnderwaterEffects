@@ -41,6 +41,7 @@ All effects are render features, so just add the ones you want. The Horizon Line
 - Caustics
 - Fog
 - Refraction
+- Blurred Water line
 - Color Changes With the Main Light and Ambient Color.
 
 # Note
