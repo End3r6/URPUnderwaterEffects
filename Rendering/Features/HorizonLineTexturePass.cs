@@ -76,8 +76,8 @@ public class HorizonLineTexturePass : ScriptableRendererFeature
             {
                 Material material = new Material(Shader.Find("Hidden/HorizonLine"));
 
-                Material waterPlaneMat = new Material(Shader.Find("Hidden/White"));
-                Material backFaceMat = new Material(Shader.Find("Hidden/BlackUnder"));
+                Material surfaceFaceMat = new Material(Shader.Find("Hidden/UpperSide"));
+                Material backFaceMat = new Material(Shader.Find("Hidden/UnderSide"));
 
                 material.SetFloat("_HorizonLine", settings.horizonLine);
 
@@ -90,7 +90,7 @@ public class HorizonLineTexturePass : ScriptableRendererFeature
                 DrawingSettings drawSettings = CreateDrawingSettings(shaderTag, ref renderingData, SortingCriteria.BackToFront);
                 DrawingSettings drawSettingsUnder = CreateDrawingSettings(shaderTag, ref renderingData, SortingCriteria.BackToFront);
 
-                drawSettings.overrideMaterial = waterPlaneMat;
+                drawSettings.overrideMaterial = surfaceFaceMat;
                 drawSettingsUnder.overrideMaterial = backFaceMat;
 
                 filteringSettings.layerMask = settings.drawMask;

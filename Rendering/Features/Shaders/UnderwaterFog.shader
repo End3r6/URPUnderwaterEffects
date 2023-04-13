@@ -72,22 +72,20 @@ Shader "Hidden/UnderwaterFog"
 
                 float3 col = tex2D(_MainTex, i.uv);
 
-                float waterLineMask = SAMPLE_TEXTURE2D(_HorizonLineTexture, sampler_HorizonLineTexture, i.uv).r;
-
-                float waterMask = waterLineMask;
+                float3 waterLineMask = SAMPLE_TEXTURE2D(_HorizonLineTexture, sampler_HorizonLineTexture, i.uv).rgb;
                 
                 float depthMask = SAMPLE_TEXTURE2D(_CameraDepthTexture, sampler_CameraDepthTexture, i.uv).r;
-
                 float depth = saturate(depthMask * _Vision);
 
-                float3 aboveWater = col * waterMask;
+                float3 aboveWater = col * waterLineMask.bbb;
+                float3 belowWater = (1 - waterLineMask);
 
-                float3 color = _FogColor.rgb * ((_MainLightColor) * (skyColor)) * (1 - waterMask);
+                float3 color = _FogColor.rgb * ((_MainLightColor) * (skyColor)) * (belowWater);
 
                 float3 finalColor = color + aboveWater;
 
                 return float4(finalColor, 1 - depth);
-                // return float4(waterLineMask.xxx, 1);
+                // return float4(waterLineMask.rgb, 1);
 
                 // return float4(depth, depth, depth, 1);
             }

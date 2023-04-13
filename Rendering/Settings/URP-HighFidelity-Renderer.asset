@@ -66,14 +66,14 @@ MonoBehaviour:
   settings:
     downsampling: 4
     stage: 2
-    rayMap: {fileID: 2800000, guid: 82a7581d1f8a7408c97dfa1ae755b054, type: 3}
+    rayMap: {fileID: 2800000, guid: e391256aba824482bb9311d839bf7d7b, type: 3}
     tint: {r: 0.75, g: 0.9968355, b: 1, a: 1}
     intensity: 10
-    scattering: 0
-    threshold: 0.25
+    scattering: 0.3
+    threshold: 0.025
     scale: 50
     speed: 1
-    steps: 5
+    steps: 3
     maxDistance: 75
     jitter: 250
     gaussBlur:
@@ -129,7 +129,7 @@ MonoBehaviour:
     drawMask:
       serializedVersion: 2
       m_Bits: 64
-    horizonLine: 0
+    horizonLine: 24.67
     renderPassEvent: 500
 --- !u!114 &11400000
 MonoBehaviour:
@@ -147,13 +147,13 @@ MonoBehaviour:
     debugReplacementPS: {fileID: 4800000, guid: cf852408f2e174538bcd9b7fda1c5ae7,
       type: 3}
   m_RendererFeatures:
-  - {fileID: -703225079573284905}
   - {fileID: -352915259991466663}
   - {fileID: -2833551049352795535}
   - {fileID: -6212919496298283212}
   - {fileID: 7306593018575115887}
+  - {fileID: 2746135228886168766}
   - {fileID: -4401229794358412074}
-  m_RendererFeatureMap: d777e31684a43df659dd64dc70311afb712a645a5534add834bf0ab5a246c7a96fd6846ea33b6665d6bc661cd2b0ebc2
+  m_RendererFeatureMap: 59dd64dc70311afb712a645a5534add834bf0ab5a246c7a96fd6846ea33b6665be34f2e6703b1c26d6bc661cd2b0ebc2
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
@@ -206,6 +206,28 @@ MonoBehaviour:
   m_Name: Depth Transparent Texture
   m_EditorClassIdentifier: 
   m_Active: 1
+--- !u!114 &2746135228886168766
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5171ed7c959e84f7e82e64ca1fb4ac00, type: 3}
+  m_Name: Blured Waterline Texture
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  settings:
+    waterLineColor: {r: 0, g: 0.6981132, b: 0.5156787, a: 1}
+    width: 3.4
+    steps: 10
+    threshold: 0.78
+    intensity: 1
+    min: 0
+    max: 0.392
+    renderPassEvent: 550
 --- !u!114 &7306593018575115887
 MonoBehaviour:
   m_ObjectHideFlags: 0
