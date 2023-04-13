@@ -19,6 +19,7 @@
 
 <p align="center">
   <img src="https://github.com/End3r6/URPUnderwaterEffects/blob/master/GIF/Shot_02.gif">
+  <img src="https://github.com/End3r6/URPUnderwaterEffects/blob/master/GIF/Showcase_WaterLine.gif">
 </p>
 
 <h1 align="center">
