@@ -82,14 +82,13 @@ public class HorizonLineTexturePass : ScriptableRendererFeature
                 material.SetFloat("_HorizonLine", settings.horizonLine);
 
                 cmd.Blit(tempTexture.Identifier(), horizonTexture.Identifier(), material, 0);
-
                 cmd.SetGlobalTexture("_HorizonLineTexture", horizonTexture.Identifier());
 
                 context.ExecuteCommandBuffer(cmd);
 
                 DrawingSettings drawSettings = CreateDrawingSettings(shaderTag, ref renderingData, SortingCriteria.BackToFront);
                 DrawingSettings drawSettingsUnder = CreateDrawingSettings(shaderTag, ref renderingData, SortingCriteria.BackToFront);
-
+            
                 drawSettings.overrideMaterial = surfaceFaceMat;
                 drawSettingsUnder.overrideMaterial = backFaceMat;
 

@@ -130,7 +130,7 @@ MonoBehaviour:
       serializedVersion: 2
       m_Bits: 64
     horizonLine: 24.67
-    renderPassEvent: 500
+    renderPassEvent: 450
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -218,15 +218,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5171ed7c959e84f7e82e64ca1fb4ac00, type: 3}
   m_Name: Blured Waterline Texture
   m_EditorClassIdentifier: 
-  m_Active: 1
+  m_Active: 0
   settings:
     waterLineColor: {r: 0, g: 0.6981132, b: 0.5156787, a: 1}
-    width: 3.4
-    steps: 10
-    threshold: 0.78
+    width: 1
+    height: 5.46
+    threshold: 0.91
     intensity: 1
     min: 0
-    max: 0.392
+    max: 1
     renderPassEvent: 550
 --- !u!114 &7306593018575115887
 MonoBehaviour:

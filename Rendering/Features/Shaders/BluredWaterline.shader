@@ -30,6 +30,8 @@ Shader "Hidden/BluredWaterline"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 
+            #include "./Hlsl/Blur.hlsl"
+
             struct appdata
             {
                 float4 vertex : POSITION;
@@ -42,76 +44,50 @@ Shader "Hidden/BluredWaterline"
                 float4 vertex : SV_POSITION;
 
                 float2 uv : TEXCOORD0;
+                // float2 uv2 : TEXCOORD1;
             };
-
-            TEXTURE2D(_HorizonLineTexture);
-            SAMPLER(sampler_HorizonLineTexture);
             
             v2f vert (appdata v)
             {
                 v2f o;
                 o.vertex = TransformWorldToHClip(v.vertex.xyz);
                 o.uv = v.uv;
+                
+                // o.uv = v.u;
+                // o.uv = 1 - v.v;
 
                 return o;
             }
 
-            sampler2D _MainTex;
+            sampler2D _HorizonLineTexture;
+            // sampler2D _InvHorizonLineTexture;
 
-            int steps;
+            float4 _HorizonLineTexture_ST;
+            // float4 _InvHorizonLineTexture_ST;
+
+            float4 _HorizonLineTexture_TexelSize;
+            // float4 _InvHorizonLineTexture_TexelSize;
+
             real width;
+            real height;
             real threshold;
-
-            #define BLUR_DEPTH_FALLOFF 100.0
-            static const real gauss_filter_weights[] = { 0.14446445, 0.13543542, 0.11153505, 0.08055309, 0.05087564, 0.02798160, 0.01332457, 0.00545096 } ;
-
 
             real3 frag (v2f i) : SV_Target
             {
-                real col = 0;
-                real accumResult = 0;
-                real accumWeights = 0;
-                
-                if(width > 0)
-                {
-                    for(real index = -steps; index <= steps; index ++)
-                    {
-                        real2 uv = i.uv + real2 (0, index * width / 1000);
-                        real kernelSample = SAMPLE_TEXTURE2D(_HorizonLineTexture, sampler_HorizonLineTexture, uv).r;
-                        real depthKernel;
-                        real depthCenter;
+                float4 col = kawaseBlur(_HorizonLineTexture, i.uv, 5, height, _HorizonLineTexture_TexelSize.xy);
+                // float4 col2 = kawaseBlur(_InvHorizonLineTexture, i.uv, 5, height, _InvHorizonLineTexture_TexelSize.xy);
 
-                        #if UNITY_REVERSED_Z
-                            depthCenter = SampleSceneDepth(i.uv);
-                            depthKernel = SampleSceneDepth(uv);
-                        #else
-                            // Adjust z to match NDC for OpenGL
-                            depthCenter = lerp(UNITY_NEAR_CLIP_VALUE, 1, SampleSceneDepth(i.uv));
-                            depthKernel = lerp(UNITY_NEAR_CLIP_VALUE, 1, SampleSceneDepth(uv));
-                        #endif
-                        
-                        real depthDiff = abs(depthKernel - depthCenter);
-                        real r2 = depthDiff*BLUR_DEPTH_FALLOFF;
-                        real g = exp(-r2 * r2);
-                        real weight = g * gauss_filter_weights[abs(index)];
+                // if(col.r > threshold)
+                // {
+                //     col.rgb = float3(0, 0, 0);
+                // }
 
-                        accumResult += weight * kernelSample;
-                        accumWeights += weight;
-                    }
+                // if(col2.r > threshold)
+                // {
+                //     col2.rgb = float3(0, 0, 0);
+                // }
 
-                    col = accumResult / accumWeights;
-
-                    if(col > threshold)
-                    {
-                        col = 0;
-                    }
-                }
-                else
-                {
-                    col = SAMPLE_TEXTURE2D(_HorizonLineTexture, sampler_HorizonLineTexture, i.uv).r;
-                }
-
-                return col;
+                return col /* + col2 */;
             }
             ENDHLSL
         }
@@ -137,112 +113,7 @@ Shader "Hidden/BluredWaterline"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 
-            struct appdata
-            {
-                float4 vertex : POSITION;
-
-                float2 uv : TEXCOORD0;
-            };
-
-            struct v2f
-            {
-                float4 vertex : SV_POSITION;
-
-                float2 uv : TEXCOORD0;
-            };
-
-            TEXTURE2D(_HardWaterLineMask);
-            SAMPLER(sampler_HardWaterLineMask);
-            
-            v2f vert (appdata v)
-            {
-                v2f o;
-                o.vertex = TransformWorldToHClip(v.vertex.xyz);
-                o.uv = v.uv;
-
-                return o;
-            }
-
-            sampler2D _MainTex;
-
-            int steps;
-            real width;
-            real threshold;
-
-            #define BLUR_DEPTH_FALLOFF 100.0
-            static const real gauss_filter_weights[] = { 0.14446445, 0.13543542, 0.11153505, 0.08055309, 0.05087564, 0.02798160, 0.01332457, 0.00545096 } ;
-
-
-            real3 frag (v2f i) : SV_Target
-            {
-                real col = 0;
-                real accumResult = 0;
-                real accumWeights = 0;
-                
-                if(width > 0)
-                {
-                    for(real index = -steps; index <= steps; index ++)
-                    {
-                        real2 uv = i.uv + real2 (0, index * width / 1000);
-                        real kernelSample = SAMPLE_TEXTURE2D(_HardWaterLineMask, sampler_HardWaterLineMask, uv).r;
-                        real depthKernel;
-                        real depthCenter;
-
-                        #if UNITY_REVERSED_Z
-                            depthCenter = SampleSceneDepth(i.uv);
-                            depthKernel = SampleSceneDepth(uv);
-                        #else
-                            // Adjust z to match NDC for OpenGL
-                            depthCenter = lerp(UNITY_NEAR_CLIP_VALUE, 1, SampleSceneDepth(i.uv));
-                            depthKernel = lerp(UNITY_NEAR_CLIP_VALUE, 1, SampleSceneDepth(uv));
-                        #endif
-                        
-                        real depthDiff = abs(depthKernel - depthCenter);
-                        real r2 = depthDiff*BLUR_DEPTH_FALLOFF;
-                        real g = exp(-r2 * r2);
-                        real weight = g * gauss_filter_weights[abs(index)];
-
-                        accumResult += weight * kernelSample;
-                        accumWeights += weight;
-                    }
-
-                    col = accumResult / accumWeights;
-
-                    if(col > threshold)
-                    {
-                        col = 0;
-                    }
-                }
-                else
-                {
-                    col = SAMPLE_TEXTURE2D(_HardWaterLineMask, sampler_HardWaterLineMask, i.uv).r;
-                }
-
-                return col;
-            }
-            ENDHLSL
-        }
-
-        Pass
-        {
-            // Blend SrcAlpha OneMinusSrcAlpha
-
-            // Tags
-            // {
-            //     "Queue" = "Transparent" 
-            //     "RenderType" = "Transparent" 
-            //     "RenderPipeline" = "UniversalRenderPipeline"
-            // }
-
-            HLSLPROGRAM
-            #pragma vertex vert
-            #pragma fragment frag
-
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-            #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Common.hlsl"
-
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+            #include "./Hlsl/Blur.hlsl"
 
             struct appdata
             {
@@ -260,8 +131,8 @@ Shader "Hidden/BluredWaterline"
 
             sampler2D _MainTex;
 
-            TEXTURE2D(_SoftWaterLineMask);
-            SAMPLER(sampler_SoftWaterLineMask);
+            TEXTURE2D(_BlurredWaterLine);
+            SAMPLER(sampler_BlurredWaterLine);
 
             float4 waterLineTint;
             float minBlur, maxBlur, intensity;
@@ -281,7 +152,7 @@ Shader "Hidden/BluredWaterline"
 
                 float3 col = tex2D(_MainTex, i.uv);
 
-                float waterLineMask = SAMPLE_TEXTURE2D(_SoftWaterLineMask, sampler_SoftWaterLineMask, i.uv).r;
+                float waterLineMask = SAMPLE_TEXTURE2D(_BlurredWaterLine, sampler_BlurredWaterLine, i.uv).r;
 
                 float invertedMask = 0;
                 if(waterLineMask > 0.3)
@@ -295,9 +166,9 @@ Shader "Hidden/BluredWaterline"
 
                 float3 waterLine = smoothstep(minBlur, maxBlur, invertedMask);
 
-                float3 finalColor =  lerp(col, waterLineTint * skyColor, waterLine * intensity);
+                float3 finalColor = lerp(col, waterLineTint * skyColor, waterLine * intensity);
 
-                return finalColor;
+                return waterLineMask;
             }
             ENDHLSL
         }

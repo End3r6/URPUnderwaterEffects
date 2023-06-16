@@ -1,4 +1,4 @@
-Shader "Hidden/HorizonLine"
+Shader "Hidden/InvertWaterLine"
 {
     Properties
     {
@@ -11,7 +11,7 @@ Shader "Hidden/HorizonLine"
 
         Pass
         {
-            Name "Horizon"
+            Name "Invert"
 
             HLSLPROGRAM
             #pragma vertex vert
@@ -32,25 +32,10 @@ Shader "Hidden/HorizonLine"
                 float4 vertex : SV_POSITION;
 
                 float2 uv : TEXCOORD0;
-
-                float3 positionWS : TEXCOORD1;
             };
 
-            float _HorizonLine;
-
-            TEXTURE2D(_CameraDepthTexture);
-            SAMPLER(sampler_CameraDepthTexture);
-
-            real3 GetWorldPos(real2 uv)
-            {
-                #if UNITY_REVERSED_Z
-                    real depth = SAMPLE_TEXTURE2D(_CameraDepthTexture, sampler_CameraDepthTexture, uv).r;
-                #else
-                    // Adjust z to match NDC for OpenGL
-                    real depth = lerp(UNITY_NEAR_CLIP_VALUE, 1, SAMPLE_TEXTURE2D(_CameraDepthTexture, sampler_CameraDepthTexture, uv));
-                #endif
-                return ComputeWorldSpacePosition(uv, depth, UNITY_MATRIX_I_VP);
-            }
+            TEXTURE2D(_HorizonLineTexture);
+            SAMPLER(sampler_HorizonLineTexture);
 
             v2f vert (appdata v)
             {
@@ -58,21 +43,15 @@ Shader "Hidden/HorizonLine"
                 o.vertex = TransformWorldToHClip(v.vertex.xyz);
                 o.uv = v.uv;
 
-                o.positionWS = TransformObjectToWorld(v.vertex.xyz);
-
                 return o;
             }
 
             float3 frag (v2f i) : SV_Target
             {
-                float3 col = 1;
+                float waterLineMask = SAMPLE_TEXTURE2D(_HorizonLineTexture, sampler_HorizonLineTexture, i.uv).r;
+                float3 col = 1 - waterLineMask;
 
-                if(GetWorldPos(i.uv).y <= _HorizonLine)
-                {
-                    col = 0;
-                }
-
-                return col;
+                return col.rrr;
             }
             ENDHLSL
         }

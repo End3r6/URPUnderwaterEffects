@@ -13,7 +13,8 @@ public class BlurredWaterLinePass : ScriptableRendererFeature
         public Color waterLineColor;
 
         public float width = 4;
-        public int steps = 10;
+        public float height = 4;
+        // public int steps = 10;
         public float threshold = 0.78f;
 
         public float intensity = 2;
@@ -35,7 +36,7 @@ public class BlurredWaterLinePass : ScriptableRendererFeature
         private RenderTargetIdentifier source;
 
         RenderTargetHandle tempTexture;
-        RenderTargetHandle softTempTexture;
+        RenderTargetHandle invertLine;
         RenderTargetHandle tempWaterLineMask;
 
         private string profilerTag;
@@ -59,14 +60,14 @@ public class BlurredWaterLinePass : ScriptableRendererFeature
             cameraTextureDescriptor.msaaSamples = 1;
 
             tempTexture.id = 5;
-            softTempTexture.id = 6;
+            invertLine.id = 6;
             tempWaterLineMask.id = 7;
 
             cmd.GetTemporaryRT(tempTexture.id, cameraTextureDescriptor);
             ConfigureTarget(tempTexture.Identifier());
 
-            cmd.GetTemporaryRT(softTempTexture.id, cameraTextureDescriptor);
-            ConfigureTarget(softTempTexture.Identifier());
+            cmd.GetTemporaryRT(invertLine.id, cameraTextureDescriptor);
+            ConfigureTarget(invertLine.Identifier());
 
             cmd.GetTemporaryRT(tempWaterLineMask.id, cameraTextureDescriptor);
             ConfigureTarget(tempWaterLineMask.Identifier());
@@ -84,9 +85,11 @@ public class BlurredWaterLinePass : ScriptableRendererFeature
             try
             {
                 Material material = new Material(Shader.Find("Hidden/BluredWaterline"));
+                Material invert = new Material(Shader.Find("Hidden/InvertWaterLine"));
                 
                 material.SetFloat("width", settings.width);
-                material.SetInteger("steps", settings.steps);
+                material.SetFloat("height", settings.height);
+
                 material.SetFloat("threshold", settings.threshold);
 
                 material.SetFloat("intensity", settings.intensity);
@@ -95,13 +98,15 @@ public class BlurredWaterLinePass : ScriptableRendererFeature
 
                 material.SetColor("waterLineTint", settings.waterLineColor);
                 
+                // cmd.Blit(source, tempTexture.Identifier(), invert);
+                // cmd.SetGlobalTexture("_InvHorizonLineTexture", tempTexture.id);
+
                 cmd.Blit(source, tempTexture.Identifier(), material, 0);
-                cmd.SetGlobalTexture("_HardWaterLineMask", tempTexture.Identifier());
+                cmd.SetGlobalTexture("_BlurredWaterLine", tempWaterLineMask.id);
 
-                cmd.Blit(tempTexture.Identifier(), softTempTexture.Identifier(), material, 1);
-                cmd.SetGlobalTexture("_SoftWaterLineMask", softTempTexture.Identifier());
+                cmd.Clear();
 
-                cmd.Blit(source, tempWaterLineMask.Identifier(), material, 2);
+                cmd.Blit(source, tempWaterLineMask.Identifier(), material, 1);
                 cmd.Blit(tempWaterLineMask.Identifier(), source);
 
                 context.ExecuteCommandBuffer(cmd);
