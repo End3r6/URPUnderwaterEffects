@@ -11,15 +11,6 @@ Shader "Hidden/UnderwaterRefraction"
 
         Pass
         {
-            // Blend SrcAlpha OneMinusSrcAlpha
-
-            // Tags
-            // {
-            //     "Queue" = "Transparent" 
-            //     "RenderType" = "Transparent" 
-            //     "RenderPipeline" = "UniversalRenderPipeline"
-            // }
-
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
@@ -32,14 +23,12 @@ Shader "Hidden/UnderwaterRefraction"
             struct appdata
             {
                 float4 vertex : POSITION;
-
                 float2 uv : TEXCOORD0;
             };
 
             struct v2f
             {
                 float4 vertex : SV_POSITION;
-
                 float2 uv : TEXCOORD0;
             };
 
