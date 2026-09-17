@@ -60,6 +60,8 @@ Shader "WorldsEndWater/Water"
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
             #pragma multi_compile_fragment _ _SHADOWS_SOFT
+            #pragma multi_compile_instancing
+            #pragma multi_compile _ DOTS_INSTANCING_ON
 
             #define _SPECULAR_COLOR
 
@@ -68,8 +70,12 @@ Shader "WorldsEndWater/Water"
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Common.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
 
-            #include "Assets/BasicUnderwaterFog/Rendering/Features/Shaders/HLSL/Noise.hlsl"
-            #include "Assets/BasicUnderwaterFog/Rendering/Features/Shaders/HLSL/Caustics.hlsl"
+            #include "Assets/URPUnderwaterEffects/Rendering/Features/Shaders/HLSL/Noise.hlsl"
+            #include "Assets/URPUnderwaterEffects/Rendering/Features/Shaders/HLSL/Caustics.hlsl"
+
+            #ifndef UNITY_DOTS_MATRIX_M
+                #define UNITY_DOTS_MATRIX_M unity_ObjectToWorld
+            #endif
 
             // the original vertex struct
             struct appdata

@@ -8,16 +8,23 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Water
-  m_Shader: {fileID: 4800000, guid: 0bd842890d04d4eba9475d54cb39d9fe, type: 3}
-  m_ValidKeywords: []
-  m_InvalidKeywords:
+  m_Shader: {fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords:
   - _SURFACE_TYPE_TRANSPARENT
+  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 1
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 3000
+  stringTagMap:
+    RenderType: Transparent
+  disabledShaderPasses:
+  - DepthOnly
+  - SHADOWCASTER
+  - MOTIONVECTORS
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -115,22 +122,27 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _AddPrecomputedVelocity: 0
     - _AlphaClip: 0
+    - _AlphaToMask: 0
     - _Blend: 0
+    - _BlendModePreserveSpecular: 0
     - _BlendOp: 0
     - _Bump: 0.5
     - _BumpScale: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
-    - _Cull: 0
+    - _Cull: 2
     - _Cutoff: 0.5
     - _Depth: 1
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 10
+    - _DstBlendAlpha: 10
     - _EnvironmentReflections: 1
     - _GlossMapScale: 0
     - _Glossiness: 0
+    - _GlossinessSource: 0
     - _GlossyReflections: 0
     - _Intensity: 1.4
     - _InterFoamSpeed: -2
@@ -150,22 +162,28 @@ Material:
     - _RefractionStrength: 0.25
     - _SampleGI: 0
     - _Scale: 20
+    - _ScreenSpaceReflectionsContributeTransparent: 1
     - _SeaDepth: 18.24
+    - _Shininess: 0
     - _SmallWaveSpeed: 1
     - _SmallWavesAmount: 0.2
     - _Smoothness: 0.793
+    - _SmoothnessSource: 0
     - _SmoothnessTextureChannel: 0
     - _SpecBumpHeight: 1.5
     - _SpecBumpScale: 34.5
+    - _SpecSource: 0
     - _SpecularHighlights: 1
     - _Speed: 0.05
     - _SrcBlend: 5
+    - _SrcBlendAlpha: 1
     - _Surface: 1
     - _SwellIntensity: 0.5
     - _Tess: 20
     - _Tiling: 11.72
     - _WavesHeight: 2
     - _WorkflowMode: 1
+    - _XRMotionVectorsPass: 1
     - _ZWrite: 0
     m_Colors:
     - _BaseColor: {r: 0, g: 0.5155754, b: 0.9811321, a: 0.70980394}
@@ -184,10 +202,11 @@ Material:
     - _ShoreColor: {r: 74.000015, g: 162.00005, b: 255.00008, a: 1}
     - _SmallWave: {r: 1, g: 0.6, b: 0.25, a: 31}
     - _SmallWavesUV: {r: 10, g: 10, b: 0, a: 0}
-    - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
+    - _SpecColor: {r: 0.19999993, g: 0.19999993, b: 0.19999993, a: 0.793}
     - _SpecularTint: {r: 29.508846, g: 29.508846, b: 29.508846, a: 1}
     - _SwellColor: {r: 74.000015, g: 162.00005, b: 255.00008, a: 1}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1
 --- !u!114 &8472537602841399927
 MonoBehaviour:
   m_ObjectHideFlags: 11
@@ -200,4 +219,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  version: 5
+  version: 10

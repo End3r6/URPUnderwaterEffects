@@ -1,79 +1,257 @@
 Shader "Hidden/UnderwaterRefraction"
 {
-    Properties
-    {
-        _MainTex ("Texture", 2D) = "white" {}
-    }
     SubShader
     {
-        // No culling or depth
-        Cull Off ZWrite Off ZTest Always
+        Tags
+        {
+            "RenderPipeline"="UniversalPipeline"
+        }
+
+        Cull Off
+        ZWrite Off
+        ZTest Always
 
         Pass
         {
+            Name "UnderwaterRefraction"
+
             HLSLPROGRAM
-            #pragma vertex vert
-            #pragma fragment frag
+
+            #pragma target 4.5
+
+            #pragma vertex Vert
+            #pragma fragment Frag
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-            #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Common.hlsl"
 
             #include "./HLSL/Noise.hlsl"
 
-            struct appdata
+            struct Attributes
             {
-                float4 vertex : POSITION;
+                uint vertexID : SV_VertexID;
+            };
+
+            struct Varyings
+            {
+                float4 positionCS : SV_POSITION;
                 float2 uv : TEXCOORD0;
             };
 
-            struct v2f
-            {
-                float4 vertex : SV_POSITION;
-                float2 uv : TEXCOORD0;
-            };
+            float _LargeScale;
+            float _LargeStrength;
 
-            float scale, intensity, speed;
+            float _SmallScale;
+            float _SmallStrength;
 
-            sampler2D _MainTex;
+            float _Speed;
 
-            TEXTURE2D(_HorizonLineTexture);
-            SAMPLER(sampler_HorizonLineTexture);
+            float _DepthDistance;
 
-            float3 NormalFromHeight(float In, float bumpScale)
+            float _EdgeStrength;
+
+            float _ChromaticStrength;
+
+            float2 _FlowDirection;
+
+            TEXTURE2D(_BlitTexture);
+            SAMPLER(sampler_BlitTexture);
+
+            TEXTURE2D(_WaterLineMask);
+            SAMPLER(sampler_WaterLineMask);
+
+            TEXTURE2D(_CameraDepthTexture);
+            SAMPLER(sampler_CameraDepthTexture);
+
+            float3 NormalFromHeight(
+                float value,
+                float bumpScale)
             {
                 float3 normal;
 
-                normal.x = ddx(In);
-                normal.y = ddy(In);
-                normal.z = sqrt(1 - normal.x * normal.x - normal.y * normal.y); // Reconstruct z component to get a unit normal.
+                normal.x = ddx(value);
+                normal.y = ddy(value);
 
-                return normal * float3(bumpScale, bumpScale, 1);
+                normal.z =
+                    sqrt(
+                        saturate(
+                            1 -
+                            normal.x * normal.x -
+                            normal.y * normal.y));
+
+                return normal *
+                    float3(
+                        bumpScale,
+                        bumpScale,
+                        1);
             }
 
-            v2f vert (appdata v)
+            Varyings Vert(
+                Attributes input)
             {
-                v2f o;
-                o.vertex = TransformWorldToHClip(v.vertex.xyz);
-                o.uv = v.uv;
+                Varyings output;
 
-                return o;
+                output.positionCS =
+                    GetFullScreenTriangleVertexPosition(
+                        input.vertexID);
+
+                output.uv =
+                    GetFullScreenTriangleTexCoord(
+                        input.vertexID);
+
+                return output;
             }
 
-            float3 frag (v2f i) : SV_Target
+            half4 Frag(
+                Varyings input)
+                : SV_Target
             {
-                float3 col = tex2D(_MainTex, i.uv);
+                float2 uv = input.uv;
 
-                float waterLineMask = SAMPLE_TEXTURE2D(_HorizonLineTexture, sampler_HorizonLineTexture, i.uv).r;
-                float2 noise = NormalFromHeight(GradientNoise(i.uv + (_Time.y * (speed / 100)), scale), intensity);
+                float waterMask =
+                    SAMPLE_TEXTURE2D(
+                        _WaterLineMask,
+                        sampler_WaterLineMask,
+                        uv).r;
 
-                float3 refColor = tex2D(_MainTex, i.uv + noise) * (1 - waterLineMask);
+                float underwaterMask =
+                    1.0 - waterMask;
 
-                float3 aboveWater = col * waterLineMask;
+                float rawDepth =
+                    SAMPLE_TEXTURE2D(
+                        _CameraDepthTexture,
+                        sampler_CameraDepthTexture,
+                        uv).r;
 
-                float3 finalColor = refColor + aboveWater;
+                float linearDepth =
+                    LinearEyeDepth(
+                        rawDepth,
+                        _ZBufferParams);
 
-                return finalColor;
+                //
+                // Distance-based distortion.
+                //
+                float depthFactor =
+                    saturate(
+                        linearDepth /
+                        max(
+                            0.001,
+                            _DepthDistance));
+
+                //
+                // Edge awareness.
+                //
+                float edge =
+                    abs(ddx(linearDepth)) +
+                    abs(ddy(linearDepth));
+
+                edge =
+                    saturate(
+                        edge *
+                        _EdgeStrength);
+
+                //
+                // Multi-layer flow.
+                //
+                float2 flowUV =
+                    uv +
+                    (_FlowDirection *
+                     _Time.y *
+                     (_Speed * 0.01));
+
+                float2 largeNoise =
+                    NormalFromHeight(
+                        GradientNoise(
+                            flowUV,
+                            _LargeScale),
+                        _LargeStrength).xy;
+
+                float2 smallNoise =
+                    NormalFromHeight(
+                        GradientNoise(
+                            flowUV * 2.7,
+                            _SmallScale),
+                        _SmallStrength).xy;
+
+                float2 distortion =
+                    largeNoise +
+                    smallNoise;
+
+                //
+                // Stronger effect
+                // farther away.
+                //
+                distortion *=
+                    depthFactor;
+
+                //
+                // Stronger around
+                // edges/silhouettes.
+                //
+                distortion *=
+                    1.0 +
+                    edge;
+
+                //
+                // Chromatic offsets.
+                //
+                float2 redUV =
+                    uv +
+                    distortion *
+                    (1.0 + _ChromaticStrength);
+
+                float2 greenUV =
+                    uv +
+                    distortion;
+
+                float2 blueUV =
+                    uv +
+                    distortion *
+                    (1.0 - _ChromaticStrength);
+
+                float red =
+                    SAMPLE_TEXTURE2D(
+                        _BlitTexture,
+                        sampler_BlitTexture,
+                        redUV).r;
+
+                float green =
+                    SAMPLE_TEXTURE2D(
+                        _BlitTexture,
+                        sampler_BlitTexture,
+                        greenUV).g;
+
+                float blue =
+                    SAMPLE_TEXTURE2D(
+                        _BlitTexture,
+                        sampler_BlitTexture,
+                        blueUV).b;
+
+                float3 refracted =
+                    float3(
+                        red,
+                        green,
+                        blue);
+
+                float3 original =
+                    SAMPLE_TEXTURE2D(
+                        _BlitTexture,
+                        sampler_BlitTexture,
+                        uv).rgb;
+
+                float3 underwater =
+                    refracted *
+                    underwaterMask;
+
+                float3 aboveWater =
+                    original *
+                    waterMask;
+
+                return float4(
+                    underwater +
+                    aboveWater,
+                    1);
             }
+
             ENDHLSL
         }
     }

@@ -1,94 +1,160 @@
 Shader "Hidden/UnderwaterFog"
 {
-    Properties
-    {
-        _MainTex ("Texture", 2D) = "white" {}
-    }
     SubShader
     {
-        // No culling or depth
-        Cull Off ZWrite Off ZTest Always
+        Tags
+        {
+            "RenderPipeline"="UniversalPipeline"
+        }
+
+        Cull Off
+        ZWrite Off
+        ZTest Always
 
         Pass
         {
+            Name "UnderwaterFog"
+
             Blend SrcAlpha OneMinusSrcAlpha
 
-            Tags
-            {
-                "Queue" = "Transparent" 
-                "RenderType" = "Transparent" 
-                "RenderPipeline" = "UniversalRenderPipeline"
-            }
-
             HLSLPROGRAM
-            #pragma vertex vert
-            #pragma fragment frag
+
+            #pragma target 4.5
+
+            #pragma vertex Vert
+            #pragma fragment Frag
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
-            #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Common.hlsl"
 
-            struct appdata
+            struct Attributes
             {
-                float4 vertex : POSITION;
-
-                float2 uv : TEXCOORD0;
+                uint vertexID : SV_VertexID;
             };
 
-            struct v2f
+            struct Varyings
             {
-                float4 vertex : SV_POSITION;
-
+                float4 positionCS : SV_POSITION;
                 float2 uv : TEXCOORD0;
             };
 
             float _Vision;
+            float _DebugView;
 
             half4 _FogColor;
 
-            sampler2D _MainTex;
+            TEXTURE2D(_BlitTexture);
+            SAMPLER(sampler_BlitTexture);
 
             TEXTURE2D(_CameraDepthTexture);
             SAMPLER(sampler_CameraDepthTexture);
-            
-            TEXTURE2D(_TransparentDepth);
-            SAMPLER(sampler_TransparentDepth);
 
-            TEXTURE2D(_HorizonLineTexture);
-            SAMPLER(sampler_HorizonLineTexture);
+            TEXTURE2D(_WaterLineMask);
+            SAMPLER(sampler_WaterLineMask);
 
-            v2f vert (appdata v)
+            Varyings Vert(Attributes input)
             {
-                v2f o;
-                o.vertex = TransformWorldToHClip(v.vertex.xyz);
-                o.uv = v.uv;
+                Varyings output;
 
-                return o;
+                output.positionCS =
+                    GetFullScreenTriangleVertexPosition(
+                        input.vertexID);
+
+                output.uv =
+                    GetFullScreenTriangleTexCoord(
+                        input.vertexID);
+
+                return output;
             }
 
-            float4 frag (v2f i) : SV_Target
+            half4 Frag(Varyings input) : SV_Target
             {
-                half3 skyColor = half3(unity_SHAr.w, unity_SHAg.w, unity_SHAb.w);
+                float3 sceneColor =
+                    SAMPLE_TEXTURE2D(
+                        _BlitTexture,
+                        sampler_BlitTexture,
+                        input.uv).rgb;
 
-                float3 col = tex2D(_MainTex, i.uv);
+                float horizonMask =
+                    SAMPLE_TEXTURE2D(
+                        _WaterLineMask,
+                        sampler_WaterLineMask,
+                        input.uv).r;
 
-                float3 waterLineMask = SAMPLE_TEXTURE2D(_HorizonLineTexture, sampler_HorizonLineTexture, i.uv).rgb;
-                
-                float depthMask = SAMPLE_TEXTURE2D(_CameraDepthTexture, sampler_CameraDepthTexture, i.uv).r;
-                float depth = saturate(depthMask * _Vision);
+                float underwaterMask =
+                    saturate(1.0 - horizonMask);
 
-                float3 aboveWater = col * waterLineMask.bbb;
-                float3 belowWater = (1 - waterLineMask);
+                float rawDepth =
+                    SAMPLE_TEXTURE2D(
+                        _CameraDepthTexture,
+                        sampler_CameraDepthTexture,
+                        input.uv).r;
 
-                float3 color = _FogColor.rgb * ((_MainLightColor) * (skyColor)) * (belowWater);
+                float linearDepth =
+                    LinearEyeDepth(
+                        rawDepth,
+                        _ZBufferParams);
 
-                float3 finalColor = color + aboveWater;
+                float fogAmount =
+                    1.0 - exp(-linearDepth / max(0.001, _Vision));
 
-                return float4(finalColor, 1 - depth);
-                // return float4(waterLineMask.rgb, 1);
+                fogAmount *= underwaterMask;
 
-                // return float4(depth, depth, depth, 1);
+                //
+                // Water absorbs red frequencies first.
+                //
+                float3 absorbedColor = sceneColor;
+
+                absorbedColor.r *= lerp(1.0, 0.05, fogAmount);
+                absorbedColor.g *= lerp(1.0, 0.45, fogAmount);
+
+                //
+                // Underwater visibility loses saturation.
+                //
+                float luminance =
+                    dot(
+                        absorbedColor,
+                        float3(
+                            0.299,
+                            0.587,
+                            0.114));
+
+                float3 desaturated =
+                    lerp(
+                        absorbedColor,
+                        luminance.xxx,
+                        fogAmount * 0.65);
+
+                //
+                // Blend into water color.
+                //
+                float3 underwaterColor =
+                    lerp(
+                        desaturated,
+                        _FogColor.rgb,
+                        fogAmount);
+
+                //
+                // Preserve visible world above water.
+                //
+                float3 finalColor =
+                    lerp(
+                        underwaterColor,
+                        sceneColor,
+                        horizonMask);
+
+                if (_DebugView > 0.5)
+                {
+                    return float4(
+                        underwaterMask.xxx,
+                        1);
+                }
+
+                return float4(
+                    finalColor,
+                    1);
             }
+
             ENDHLSL
         }
     }

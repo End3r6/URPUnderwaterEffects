@@ -1,0 +1,60 @@
+using System;
+using UnityEngine;
+using UnityEngine.Rendering;
+
+[Serializable]
+[VolumeComponentMenu("Underwater Effects/Blurred Water Line")]
+public sealed class UnderwaterBlurredWaterLineVolume
+    : VolumeComponent
+{
+    public BoolParameter enabled =
+        new BoolParameter(true);
+
+    [Header("Appearance")]
+    public ColorParameter color =
+        new ColorParameter(Color.white);
+
+    public ClampedFloatParameter intensity =
+        new ClampedFloatParameter(
+            1f,
+            0f,
+            1);
+
+    [Header("Water Line")]
+    public ClampedFloatParameter thickness =
+        new ClampedFloatParameter(
+            4f,
+            0f,
+            50f);
+
+    public ClampedFloatParameter softness =
+        new ClampedFloatParameter(
+            0.2f,
+            0.001f,
+            1f);
+
+    public ClampedFloatParameter verticalBlur =
+        new ClampedFloatParameter(
+            2f,
+            0f,
+            20f);
+
+    public ClampedFloatParameter highlightThickness =
+        new ClampedFloatParameter(
+            2f,
+            0f,
+            50f);
+
+    [Header("Refraction")]
+    public ClampedFloatParameter refractionStrength =
+        new ClampedFloatParameter(
+            15f,
+            0f,
+            100f);
+
+    public ClampedFloatParameter highlightIntensity =
+        new ClampedFloatParameter(
+            1f,
+            0f,
+            10f);
+}

@@ -1,110 +1,388 @@
 Shader "Hidden/UnderwaterCaustics"
 {
-    Properties
-    {
-        _MainTex ("Texture", 2D) = "white" {}
-    }
     SubShader
     {
-        // No culling or depth
-        Cull Off ZWrite Off ZTest Always
+        Tags
+        {
+            "RenderPipeline" = "UniversalPipeline"
+        }
+
+        Cull Off
+        ZWrite Off
+        ZTest Always
 
         Pass
         {
+            Name "UnderwaterCaustics"
+
             Blend SrcAlpha OneMinusSrcAlpha
 
-            Tags
-            {
-                "Queue" = "Transparent" 
-                "RenderType" = "Transparent" 
-                "RenderPipeline" = "UniversalRenderPipeline"
-            }
-
             HLSLPROGRAM
-            #pragma vertex vert
-            #pragma fragment frag
+
+            #pragma target 4.5
+
+            #pragma vertex Vert
+            #pragma fragment Frag
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-            #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Common.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 
             #include "./HLSL/Caustics.hlsl"
 
-            struct appdata
+            struct Attributes
             {
-                float4 vertex : POSITION;
+                uint vertexID : SV_VertexID;
+            };
 
+            struct Varyings
+            {
+                float4 positionCS : SV_POSITION;
                 float2 uv : TEXCOORD0;
             };
 
-            struct v2f
+            float _Speed;
+            float _Tiling;
+            float _RGBSplit;
+
+            float _Intensity;
+            float _Range;
+
+            float _DepthFade;
+
+            float _Coverage;
+
+            float _LightDirectionBias;
+            float _LightStretch;
+
+            float _UnderwaterOnly;
+
+            float4 _CausticColor;
+
+            TEXTURE2D(_BlitTexture);
+            SAMPLER(sampler_BlitTexture);
+
+            TEXTURE2D(_WaterLineMask);
+            SAMPLER(sampler_WaterLineMask);
+
+            TEXTURE2D(_CameraDepthTexture);
+            SAMPLER(sampler_CameraDepthTexture);
+
+            Varyings Vert(
+                Attributes input)
             {
-                float4 vertex : SV_POSITION;
+                Varyings output;
 
-                float2 uv : TEXCOORD0;
-            };
+                output.positionCS =
+                    GetFullScreenTriangleVertexPosition(
+                        input.vertexID);
 
-            float tiling, speed, RGBSplit, intensity, range;
+                output.uv =
+                    GetFullScreenTriangleTexCoord(
+                        input.vertexID);
 
-            sampler2D _MainTex;
-
-            half4x4 _MainLightDirection;
-
-            TEXTURE2D(_CameraDepthNormalsTexture);
-            SAMPLER(sampler_CameraDepthNormalsTexture);
-
-            TEXTURE2D(_HorizonLineTexture);
-            SAMPLER(sampler_HorizonLineTexture);
-
-            v2f vert (appdata v)
-            {
-                v2f o;
-                o.vertex = TransformWorldToHClip(v.vertex.xyz);
-                o.uv = v.uv;
-
-                return o;
+                return output;
             }
 
-            float4 frag (v2f i) : SV_Target
+            half4 Frag(
+                Varyings input)
+                : SV_Target
             {
-                half3 skyColor = half3(unity_SHAr.w, unity_SHAg.w, unity_SHAb.w);
-                float2 positionNDC = i.vertex.xy / _ScaledScreenParams.xy;
+                float2 uv = input.uv;
 
-                // sample scene depth using screen-space coordinates
-                #if UNITY_REVERSED_Z
-                real depth = SampleSceneDepth(positionNDC);
-                #else
-                    real depth = lerp(UNITY_NEAR_CLIP_VALUE, 1, SampleSceneDepth(UV));
-                #endif
+                float3 source =
+                    SAMPLE_TEXTURE2D(
+                        _BlitTexture,
+                        sampler_BlitTexture,
+                        uv).rgb;
 
-                float3 positionWS = ComputeWorldSpacePosition(positionNDC, depth, UNITY_MATRIX_I_VP);
+                float waterMask =
+                    SAMPLE_TEXTURE2D(
+                        _WaterLineMask,
+                        sampler_WaterLineMask,
+                        uv).r;
 
-                float3 positionOS = TransformWorldToObject(positionWS);
+                float underwaterMask =
+                    _UnderwaterOnly > 0.5
+                    ? 1.0 - waterMask
+                    : 1.0;
 
-                float distance = 1 - SAMPLE_TEXTURE2D(_CameraDepthTexture, sampler_CameraDepthTexture, i.uv).r * 100;
-                float waterLineMask = SAMPLE_TEXTURE2D(_HorizonLineTexture, sampler_HorizonLineTexture, i.uv).r;
-                
-                half4 caustics = 0;
-                if((distance < range))
+                float rawDepth =
+                    SAMPLE_TEXTURE2D(
+                        _CameraDepthTexture,
+                        sampler_CameraDepthTexture,
+                        uv).r;
+
+                float linearDepth =
+                    LinearEyeDepth(
+                        rawDepth,
+                        _ZBufferParams);
+
+                float fade =
+                    saturate(
+                        1.0 -
+                        linearDepth /
+                        max(
+                            0.001,
+                            _Range));
+
+                fade =
+                    pow(
+                        fade,
+                        max(
+                            0.001,
+                            _DepthFade));
+
+                float3 worldPos =
+                    ComputeWorldSpacePosition(
+                        uv,
+                        rawDepth,
+                        UNITY_MATRIX_I_VP);
+
+                //
+                // Reconstruct world normal
+                //
+                float3 dx =
+                    ddx(worldPos);
+
+                float3 dy =
+                    ddy(worldPos);
+
+                float3 worldNormal =
+                    normalize(
+                        cross(
+                            dx,
+                            dy));
+
+                //
+                // Stable blending
+                //
+                float3 blend =
+                    abs(worldNormal);
+
+                //
+                // Favor floors
+                //
+                blend.y *= 2.0;
+
+                float triplanarSharpness =
+                    4.0;
+
+                blend =
+                    pow(
+                        blend,
+                        triplanarSharpness);
+
+                blend /=
+                    max(
+                        0.0001,
+                        blend.x +
+                        blend.y +
+                        blend.z);
+
+                //
+                // Main directional light
+                //
+                Light mainLight =
+                    GetMainLight();
+
+                float3 lightDir =
+                    normalize(
+                        mainLight.direction);
+
+                float lightFacing =
+                    saturate(
+                        dot(
+                            worldNormal,
+                            -lightDir));
+
+                lightFacing =
+                    pow(
+                        lightFacing,
+                        max(
+                            0.001,
+                            _LightDirectionBias));
+
+                //
+                // Upward bias
+                //
+                float upness =
+                    saturate(
+                        dot(
+                            worldNormal,
+                            float3(
+                                0,
+                                1,
+                                0)));
+
+                upness =
+                    lerp(
+                        0.25,
+                        1.0,
+                        upness);
+
+                //
+                // Build light-space basis
+                //
+                float3 tangent =
+                    normalize(
+                        cross(
+                            float3(0,1,0),
+                            lightDir));
+
+                if(length(tangent) < 0.001)
                 {
-                    half2 uv = mul(positionWS, _MainLightDirection).xy;
-
-                    half2 uv1 = Panner(uv, speed, 1 / tiling);
-                    half2 uv2 = Panner(uv, 1 * speed, -1 / tiling);
-
-                    half4 tex1 = SampleCaustics(uv1, RGBSplit / 100);
-                    half4 tex2 = SampleCaustics(uv2, RGBSplit / 100);
-
-                    caustics = min(tex1, tex2) * (1 - waterLineMask) * -intensity * float4(skyColor, 1);
+                    tangent =
+                        float3(
+                            1,
+                            0,
+                            0);
                 }
 
-                float4 col = tex2D(_MainTex, i.uv);
+                float3 bitangent =
+                    normalize(
+                        cross(
+                            lightDir,
+                            tangent));
 
-                float4 aboveWater = col * waterLineMask;
+                float3 lightSpacePos =
+                    float3(
+                        dot(
+                            worldPos,
+                            tangent),
 
-                //final combination
-                return aboveWater + caustics;
+                        dot(
+                            worldPos,
+                            bitangent),
+
+                        dot(
+                            worldPos,
+                            lightDir));
+
+                //
+                // Triplanar UVs
+                //
+                float2 uvX =
+                    lightSpacePos.zy;
+
+                float2 uvY =
+                    lightSpacePos.xz;
+
+                float2 uvZ =
+                    float2(
+                        lightSpacePos.x *
+                        _LightStretch,
+
+                        lightSpacePos.y);
+
+                //
+                // X Projection
+                //
+                float3 causticsX =
+                    min(
+                        SampleCaustics(
+                            Panner(
+                                uvX,
+                                _Speed / 100.0,
+                                1.0 / _Tiling),
+                            _RGBSplit).rgb,
+
+                        SampleCaustics(
+                            Panner(
+                                uvX,
+                                _Speed / 100.0,
+                                -1.0 / _Tiling),
+                            _RGBSplit).rgb);
+
+                //
+                // Y Projection
+                //
+                float3 causticsY =
+                    min(
+                        SampleCaustics(
+                            Panner(
+                                uvY,
+                                _Speed / 100.0,
+                                1.0 / _Tiling),
+                            _RGBSplit).rgb,
+
+                        SampleCaustics(
+                            Panner(
+                                uvY,
+                                _Speed / 100.0,
+                                -1.0 / _Tiling),
+                            _RGBSplit).rgb);
+
+                //
+                // Z Projection
+                //
+                float3 causticsZ =
+                    min(
+                        SampleCaustics(
+                            Panner(
+                                uvZ,
+                                _Speed / 100.0,
+                                1.0 / _Tiling),
+                            _RGBSplit).rgb,
+
+                        SampleCaustics(
+                            Panner(
+                                uvZ,
+                                _Speed / 100.0,
+                                -1.0 / _Tiling),
+                            _RGBSplit).rgb);
+
+                //
+                // Triplanar Blend
+                //
+                float3 caustics =
+                    causticsX * blend.x +
+                    causticsY * blend.y +
+                    causticsZ * blend.z;
+
+                //
+                // Coverage control
+                //
+                caustics =
+                    saturate(
+                        caustics -
+                        _Coverage);
+
+                //
+                // Contrast
+                //
+                caustics =
+                    pow(
+                        saturate(
+                            caustics),
+                        2.0);
+
+                caustics *=
+                    _Intensity;
+
+                caustics *=
+                    fade;
+
+                caustics *=
+                    underwaterMask;
+
+                caustics *=
+                    _CausticColor.rgb;
+
+                caustics *=
+                    upness;
+
+                caustics *=
+                    lightFacing;
+
+                float3 finalColor =
+                    source +
+                    caustics;
+
+                return float4(
+                    finalColor,
+                    1.0);
             }
+
             ENDHLSL
         }
     }

@@ -1,39 +1,33 @@
 Shader "Hidden/HorizonLine"
 {
-    Properties
-    {
-        _MainTex ("Texture", 2D) = "white" {}
-    }
     SubShader
     {
-        // No culling or depth
-        Cull Off ZWrite Off ZTest Always
+        Tags { "RenderPipeline"="UniversalPipeline" }
+
+        Cull Off
+        ZWrite Off
+        ZTest Always
 
         Pass
         {
             Name "Horizon"
 
             HLSLPROGRAM
-            #pragma vertex vert
-            #pragma fragment frag
+
+            #pragma vertex Vert
+            #pragma fragment Frag
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-            #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Common.hlsl"
 
-            struct appdata
+            struct Attributes
             {
-                float4 vertex : POSITION;
-
-                float2 uv : TEXCOORD0;
+                uint vertexID : SV_VertexID;
             };
 
-            struct v2f
+            struct Varyings
             {
-                float4 vertex : SV_POSITION;
-
+                float4 positionCS : SV_POSITION;
                 float2 uv : TEXCOORD0;
-
-                float3 positionWS : TEXCOORD1;
             };
 
             float _HorizonLine;
@@ -41,39 +35,57 @@ Shader "Hidden/HorizonLine"
             TEXTURE2D(_CameraDepthTexture);
             SAMPLER(sampler_CameraDepthTexture);
 
-            real3 GetWorldPos(real2 uv)
+            float3 GetWorldPos(float2 uv)
             {
-                #if UNITY_REVERSED_Z
-                    real depth = SAMPLE_TEXTURE2D(_CameraDepthTexture, sampler_CameraDepthTexture, uv).r;
-                #else
-                    // Adjust z to match NDC for OpenGL
-                    real depth = lerp(UNITY_NEAR_CLIP_VALUE, 1, SAMPLE_TEXTURE2D(_CameraDepthTexture, sampler_CameraDepthTexture, uv));
-                #endif
-                return ComputeWorldSpacePosition(uv, depth, UNITY_MATRIX_I_VP);
+            #if UNITY_REVERSED_Z
+                float depth =
+                    SAMPLE_TEXTURE2D(
+                        _CameraDepthTexture,
+                        sampler_CameraDepthTexture,
+                        uv).r;
+            #else
+                float depth =
+                    lerp(
+                        UNITY_NEAR_CLIP_VALUE,
+                        1,
+                        SAMPLE_TEXTURE2D(
+                            _CameraDepthTexture,
+                            sampler_CameraDepthTexture,
+                            uv).r);
+            #endif
+
+                return ComputeWorldSpacePosition(
+                    uv,
+                    depth,
+                    UNITY_MATRIX_I_VP);
             }
 
-            v2f vert (appdata v)
+            Varyings Vert(Attributes input)
             {
-                v2f o;
-                o.vertex = TransformWorldToHClip(v.vertex.xyz);
-                o.uv = v.uv;
+                Varyings o;
 
-                o.positionWS = TransformObjectToWorld(v.vertex.xyz);
+                o.positionCS =
+                    GetFullScreenTriangleVertexPosition(
+                        input.vertexID);
+
+                o.uv =
+                    GetFullScreenTriangleTexCoord(
+                        input.vertexID);
 
                 return o;
             }
 
-            float3 frag (v2f i) : SV_Target
+            half4 Frag(Varyings input) : SV_Target
             {
-                float3 col = 1;
+                float3 worldPos =
+                    GetWorldPos(input.uv);
 
-                if(GetWorldPos(i.uv).y <= _HorizonLine)
-                {
-                    col = 0;
-                }
-
-                return col;
+                return
+                    worldPos.y <= _HorizonLine
+                    ? half4(0,0,0,1)
+                    : half4(1,1,1,1);
             }
+
             ENDHLSL
         }
     }
