@@ -78,8 +78,8 @@ public sealed class UnderwaterSunShaftsVolume
 
     [Header("Blur")]
 
-    public ClampedFloatParameter blurSamples =
-        new ClampedFloatParameter(
+    public ClampedIntParameter blurSamples =
+        new ClampedIntParameter(
             6,
             0,
             16);

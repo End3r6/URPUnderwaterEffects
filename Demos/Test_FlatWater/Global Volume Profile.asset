@@ -33,13 +33,19 @@ MonoBehaviour:
     m_Value: 9.1
   highlightThickness:
     m_OverrideState: 1
-    m_Value: 2.6
+    m_Value: 3.3
   refractionStrength:
     m_OverrideState: 1
-    m_Value: 3.8
+    m_Value: 2.8
   highlightIntensity:
     m_OverrideState: 1
-    m_Value: 0.55
+    m_Value: 0.38
+  highlightFineNoiseScale:
+    m_OverrideState: 1
+    m_Value: 24.9
+  highlightBroadNoiseScale:
+    m_OverrideState: 1
+    m_Value: 4.1
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -223,34 +229,34 @@ MonoBehaviour:
     m_Value: {r: 0.85849047, g: 0.94917345, b: 1, a: 1}
   intensity:
     m_OverrideState: 1
-    m_Value: 7.9
+    m_Value: 14.1
   scattering:
     m_OverrideState: 1
-    m_Value: 0.053
+    m_Value: 0.11
   threshold:
     m_OverrideState: 1
-    m_Value: 0.096
+    m_Value: 0.082
   scale:
     m_OverrideState: 1
     m_Value: 50
   speed:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 1
   steps:
     m_OverrideState: 1
     m_Value: 10
   maxDistance:
     m_OverrideState: 1
-    m_Value: 30
+    m_Value: 15
   jitter:
     m_OverrideState: 1
-    m_Value: 530
+    m_Value: 628
   blurSamples:
     m_OverrideState: 1
-    m_Value: 3
+    m_Value: 4
   blurAmount:
     m_OverrideState: 1
-    m_Value: 6.38
+    m_Value: 5.03
   downsample:
     m_OverrideState: 1
     m_Value: 2

@@ -57,4 +57,16 @@ public sealed class UnderwaterBlurredWaterLineVolume
             1f,
             0f,
             10f);
+
+    public ClampedFloatParameter highlightFineNoiseScale =
+        new ClampedFloatParameter(
+            30f,
+            0f,
+            100f);
+
+    public ClampedFloatParameter highlightBroadNoiseScale =
+        new ClampedFloatParameter(
+            100f,
+            0f,
+            100f);
 }

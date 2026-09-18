@@ -81,13 +81,9 @@ public sealed class UnderwaterSunShaftsEffect : UnderwaterEffect<UnderwaterSunSh
                 "_NoiseTex",
                 caustics.causticsTexture.value);
 
-            material.SetFloat(
-                "_Scale",
-                caustics.tiling.value);
+            material.SetFloat("_Scale", caustics.tiling.value);
 
-            material.SetFloat(
-                "_Speed",
-                caustics.speed.value);
+            material.SetFloat("_Speed", caustics.speed.value / 10);
         }
         else
         {

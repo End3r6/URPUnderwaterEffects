@@ -2,11 +2,7 @@ Shader "Hidden/UnderSide"
 {
     SubShader
     {
-        Tags
-        {
-            "RenderPipeline"="UniversalPipeline"
-            "RenderType"="Opaque"
-        }
+        Tags { "RenderPipeline"="UniversalPipeline" "RenderType"="Opaque" }
 
         Pass
         {
@@ -46,21 +42,16 @@ Shader "Hidden/UnderSide"
 
                 Varyings output;
 
-                VertexPositionInputs pos =
-                    GetVertexPositionInputs(
-                        input.positionOS.xyz);
+                VertexPositionInputs pos = GetVertexPositionInputs(input.positionOS.xyz);
 
-                output.positionCS =
-                    pos.positionCS;
+                output.positionCS = pos.positionCS;
 
                 return output;
             }
 
-            half4 Frag(Varyings input)
-                : SV_Target
+            half4 Frag(Varyings input) : SV_Target
             {
-                return half4(
-                    0,0,0,1);
+                return half4(0,0,0,1);
             }
 
             ENDHLSL

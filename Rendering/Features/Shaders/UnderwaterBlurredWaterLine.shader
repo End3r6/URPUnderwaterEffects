@@ -20,6 +20,7 @@ Shader "Hidden/UnderwaterBlurredWaterLine"
             #pragma fragment Frag
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            #include "Assets/URPUnderwaterEffects/Rendering/Features/Shaders/HLSL/Noise.hlsl"
 
             struct Attributes
             {
@@ -55,6 +56,8 @@ Shader "Hidden/UnderwaterBlurredWaterLine"
             float _Softness;
             float _VerticalBlur;
             float _HighlightThickness;
+            float _HighlightFineNoiseScale;
+            float _HighlightBroadNoiseScale;
 
             float _RefractionStrength;
             float _HighlightIntensity;
@@ -101,12 +104,15 @@ Shader "Hidden/UnderwaterBlurredWaterLine"
                 float highlightAbove = SampleWaterMask(uv + float2(0, highlightDistance));
                 float topEdgeDifference = highlightAbove - highlightAtSurface;
                 float topEdgeMask = smoothstep(0.001, max(0.01, _Softness), abs(topEdgeDifference));
+                float bottomEdgeMask = smoothstep(0.001, max(0.01, _Softness), abs(topEdgeDifference));
 
                 float3 originalScene = SAMPLE_TEXTURE2D(_BlitTexture, sampler_BlitTexture, uv).rgb;
                 float blurRadius = max(0.0, _VerticalBlur) * pixelUV;
                 float3 blurredScene = SampleSceneBlur(uv, blurRadius);
 
-                float waveNoise = Noise(floor(uv * float2(18.0, 5.0)));
+                // float waveNoise = Noise(floor(uv * float2(18.0, 5.0)));
+                float waveNoise = GradientNoise(uv, 100);
+
                 waveNoise = lerp(0.75, 1.25, smoothstep(0.2, 0.8, waveNoise));
                 float refractionOffset = signedEdge * _RefractionStrength * pixelUV * waveNoise;
                 float2 refractedUV = saturate(uv + float2(0.0, refractionOffset));
@@ -118,8 +124,12 @@ Shader "Hidden/UnderwaterBlurredWaterLine"
                 float3 finalColor = lerp(originalScene, blurredRefraction, blend);
 
                 float sourceLuminance = dot(originalScene, float3(0.2126, 0.7152, 0.0722));
-                float fineNoise = Noise(floor(uv * float2(48.0, 9.0)));
-                float broadNoise = Noise(floor(uv * float2(12.0, 3.0)));
+                // float fineNoise = Noise(floor(uv * float2(48.0, 9.0)));
+                // float broadNoise = Noise(floor(uv * float2(12.0, 3.0)));
+
+                float fineNoise = GradientNoise(uv, _HighlightFineNoiseScale);
+                float broadNoise = GradientNoise(uv, _HighlightBroadNoiseScale);
+
                 float choppyNoise = smoothstep(0.35, 0.7, fineNoise * 0.65 + broadNoise * 0.35);
                 float highlight = topEdgeMask * choppyNoise * _HighlightIntensity * lerp(0.35, 1.0, saturate(sourceLuminance));
                 finalColor += highlight.xxx;

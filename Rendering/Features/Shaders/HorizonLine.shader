@@ -37,53 +37,31 @@ Shader "Hidden/HorizonLine"
 
             float3 GetWorldPos(float2 uv)
             {
-            #if UNITY_REVERSED_Z
-                float depth =
-                    SAMPLE_TEXTURE2D(
-                        _CameraDepthTexture,
-                        sampler_CameraDepthTexture,
-                        uv).r;
-            #else
-                float depth =
-                    lerp(
-                        UNITY_NEAR_CLIP_VALUE,
-                        1,
-                        SAMPLE_TEXTURE2D(
-                            _CameraDepthTexture,
-                            sampler_CameraDepthTexture,
-                            uv).r);
-            #endif
+                #if UNITY_REVERSED_Z
+                    float depth = SAMPLE_TEXTURE2D( _CameraDepthTexture, sampler_CameraDepthTexture, uv).r;
+                #else
+                    float depth = lerp(UNITY_NEAR_CLIP_VALUE, 1, SAMPLE_TEXTURE2D(_CameraDepthTexture, sampler_CameraDepthTexture, uv).r);
+                #endif
 
-                return ComputeWorldSpacePosition(
-                    uv,
-                    depth,
-                    UNITY_MATRIX_I_VP);
+                return ComputeWorldSpacePosition(uv, depth, UNITY_MATRIX_I_VP);
             }
 
             Varyings Vert(Attributes input)
             {
                 Varyings o;
 
-                o.positionCS =
-                    GetFullScreenTriangleVertexPosition(
-                        input.vertexID);
+                o.positionCS = GetFullScreenTriangleVertexPosition(input.vertexID);
 
-                o.uv =
-                    GetFullScreenTriangleTexCoord(
-                        input.vertexID);
+                o.uv = GetFullScreenTriangleTexCoord(input.vertexID);
 
                 return o;
             }
 
             half4 Frag(Varyings input) : SV_Target
             {
-                float3 worldPos =
-                    GetWorldPos(input.uv);
+                float3 worldPos = GetWorldPos(input.uv);
 
-                return
-                    worldPos.y <= _HorizonLine
-                    ? half4(0,0,0,1)
-                    : half4(1,1,1,1);
+                return worldPos.y <= _HorizonLine ? half4(0,0,0,1) : half4(1,1,1,1);
             }
 
             ENDHLSL

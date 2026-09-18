@@ -82,6 +82,14 @@ public sealed class UnderwaterBlurredWaterLineEffect
             "_HighlightIntensity",
             Volume.highlightIntensity.value);
 
+        material.SetFloat(
+            "_HighlightFineNoiseScale",
+            Volume.highlightFineNoiseScale.value);
+
+        material.SetFloat(
+            "_HighlightBroadNoiseScale",
+            Volume.highlightBroadNoiseScale.value);
+
         renderGraph.AddBlitPass(
             new RenderGraphUtils
                 .BlitMaterialParameters(
