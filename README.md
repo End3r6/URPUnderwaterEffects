@@ -97,7 +97,7 @@ If you create something cool with the package, submit an issue with a few screen
 
 - Fog currently does not affect transparent objects.
 
-If you happen to know a good solution to this one, I'd love the help.
+I am actively working on this one and it should be supported shortly.
 
 ---
 
