@@ -3,7 +3,7 @@ name: Automated Release
 on:
   push:
     branches:
-      - main
+      - master
 
 permissions:
   contents: write
