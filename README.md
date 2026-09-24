@@ -1,3 +1,7 @@
+<p align="center">
+  <img width="200" height="200" src="https://github.com/End3r6/URPUnderwaterEffects/blob/master/UnderwaterLogo.png">
+</p>
+
 # URP Underwater Effects
 
 An implementation of underwater effects that render below the water line.
