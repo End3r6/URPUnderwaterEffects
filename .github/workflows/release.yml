@@ -1,0 +1,78 @@
+name: Automated Release
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get Latest Commit Message
+        id: commit
+        run: |
+          echo "message<<EOF" >> $GITHUB_OUTPUT
+          git log -1 --pretty=%B >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Determine Version
+        id: version
+        run: |
+          COMMIT_MSG="${{ steps.commit.outputs.message }}"
+
+          if [[ "$COMMIT_MSG" == MID:* ]]; then
+            BUMP="minor"
+          elif [[ "$COMMIT_MSG" == MINOR:* ]]; then
+            BUMP="patch"
+          else
+            echo "release=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          TAG=$(git tag --sort=-version:refname | head -n 1)
+
+          if [ -z "$TAG" ]; then
+            TAG="v1.0.0"
+          fi
+
+          VERSION=${TAG#v}
+
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
+
+          if [ "$BUMP" = "minor" ]; then
+            MINOR=$((MINOR + 1))
+            PATCH=0
+          else
+            PATCH=$((PATCH + 1))
+          fi
+
+          NEW_TAG="v${MAJOR}.${MINOR}.${PATCH}"
+
+          echo "tag=$NEW_TAG" >> $GITHUB_OUTPUT
+          echo "release=true" >> $GITHUB_OUTPUT
+
+      - name: Create Tag
+        if: steps.version.outputs.release == 'true'
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+
+          git tag ${{ steps.version.outputs.tag }}
+          git push origin ${{ steps.version.outputs.tag }}
+
+      - name: Create GitHub Release
+        if: steps.version.outputs.release == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          generate_release_notes: true
