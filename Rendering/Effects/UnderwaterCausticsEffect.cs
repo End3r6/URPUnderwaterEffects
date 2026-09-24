@@ -6,8 +6,7 @@ using UnityEngine.Rendering.RenderGraphModule.Util;
 using UnityEngine.Rendering.Universal;
 
 [UnderwaterEffect(UnderwaterEffectOrder.Caustics)]
-public sealed class UnderwaterCausticsEffect
-    : UnderwaterEffect<UnderwaterCausticsVolume>
+public sealed class UnderwaterCausticsEffect : UnderwaterEffect<UnderwaterCausticsVolume>
 {
     private readonly Material material;
 
