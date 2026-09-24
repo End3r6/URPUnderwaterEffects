@@ -4,8 +4,8 @@ using UnityEngine.Rendering.RenderGraphModule;
 using UnityEngine.Rendering.RenderGraphModule.Util;
 using UnityEngine.Rendering.Universal;
 
-public sealed class UnderwaterFogEffect
-    : UnderwaterEffect<UnderwaterFogVolume>
+[UnderwaterEffect(UnderwaterEffectOrder.Fog)]
+public sealed class UnderwaterFogEffect : UnderwaterEffect<UnderwaterFogVolume>
 {
     private readonly Material material;
 
@@ -16,17 +16,11 @@ public sealed class UnderwaterFogEffect
                 Shader.Find("Hidden/UnderwaterFog"));
     }
 
-    public override bool IsActive()
-    {
-        return Volume != null &&
-               Volume.enabled.value;
-    }
-
     public override void RecordRenderGraph(
         RenderGraph renderGraph,
         ContextContainer frameData)
     {
-        if (Volume == null)
+        if (!IsActive())
             return;
 
         UniversalResourceData resourceData =

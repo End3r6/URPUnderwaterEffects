@@ -4,8 +4,8 @@ using UnityEngine.Rendering.RenderGraphModule;
 using UnityEngine.Rendering.RenderGraphModule.Util;
 using UnityEngine.Rendering.Universal;
 
-public sealed class UnderwaterBlurredWaterLineEffect
-    : UnderwaterEffect<UnderwaterBlurredWaterLineVolume>
+[UnderwaterEffect(UnderwaterEffectOrder.BlurredWaterLine)]
+public sealed class UnderwaterBlurredWaterLineEffect : UnderwaterEffect<UnderwaterBlurredWaterLineVolume>
 {
     private readonly Material material;
 
@@ -17,11 +17,6 @@ public sealed class UnderwaterBlurredWaterLineEffect
                     "Hidden/UnderwaterBlurredWaterLine"));
     }
 
-    public override bool IsActive()
-    {
-        return Volume != null &&
-               Volume.enabled.value;
-    }
 
     public override void RecordRenderGraph(
         RenderGraph renderGraph,

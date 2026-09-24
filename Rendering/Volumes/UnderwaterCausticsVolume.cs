@@ -7,8 +7,6 @@ using UnityEngine.Rendering;
 public sealed class UnderwaterCausticsVolume
     : VolumeComponent
 {
-    public BoolParameter enabled =
-        new BoolParameter(true);
 
     public TextureParameter causticsTexture =
         new TextureParameter(null);
@@ -55,7 +53,7 @@ public sealed class UnderwaterCausticsVolume
         new(
             1.5f,
             0.1f,
-            10f);    
+            10f);
 
     [Header("Appearance")]
     public ClampedFloatParameter rgbSplit =

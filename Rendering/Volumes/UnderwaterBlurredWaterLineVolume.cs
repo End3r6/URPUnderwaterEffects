@@ -4,12 +4,8 @@ using UnityEngine.Rendering;
 
 [Serializable]
 [VolumeComponentMenu("Underwater Effects/Blurred Water Line")]
-public sealed class UnderwaterBlurredWaterLineVolume
-    : VolumeComponent
+public sealed class UnderwaterBlurredWaterLineVolume : VolumeComponent
 {
-    public BoolParameter enabled =
-        new BoolParameter(true);
-
     [Header("Appearance")]
     public ColorParameter color =
         new ColorParameter(Color.white);

@@ -6,8 +6,6 @@ using UnityEngine.Rendering;
 [VolumeComponentMenu("Underwater Effects/Underwater Fog")]
 public sealed class UnderwaterFogVolume : VolumeComponent
 {
-    public BoolParameter enabled =
-        new BoolParameter(true);
 
     public ColorParameter fogColor =
         new ColorParameter(

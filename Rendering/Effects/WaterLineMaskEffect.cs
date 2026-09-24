@@ -5,6 +5,7 @@ using UnityEngine.Rendering.RenderGraphModule;
 using UnityEngine.Rendering.RenderGraphModule.Util;
 using UnityEngine.Rendering.Universal;
 
+[UnderwaterEffect(UnderwaterEffectOrder.WaterLine)]
 public sealed class WaterLineMaskEffect
     : UnderwaterEffect
 {
@@ -54,7 +55,7 @@ public sealed class WaterLineMaskEffect
                 CoreUtils.CreateEngineMaterial(
                     Shader.Find("Hidden/UpperSide"));
 
-        underSideMaterial = 
+        underSideMaterial =
                 CoreUtils.CreateEngineMaterial(
                     Shader.Find("Hidden/UnderSide"));
     }

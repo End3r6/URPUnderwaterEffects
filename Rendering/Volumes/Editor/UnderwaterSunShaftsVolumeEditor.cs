@@ -40,7 +40,7 @@ public sealed class UnderwaterSunShaftsVolumeEditor
         enabled =
             Unpack(
                 o.Find(
-                    x => x.enabled));
+                    x => x.active));
 
         inheritCaustics =
             Unpack(

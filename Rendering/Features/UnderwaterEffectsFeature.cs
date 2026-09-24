@@ -1,10 +1,11 @@
+using System;
+using System.Linq;
+using System.Reflection;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.RenderGraphModule;
 using UnityEngine.Rendering.Universal;
-using UnityEngine.Rendering.RendererUtils;
-using UnityEngine.Rendering.RenderGraphModule.Util;
 
 public sealed class UnderwaterEffectsFeature
     : ScriptableRendererFeature
@@ -48,12 +49,48 @@ public sealed class UnderwaterEffectsFeature
             //
             // Register effects here.
             //
-            effects.Add(new WaterLineMaskEffect());
-            effects.Add(new UnderwaterFogEffect());
-            effects.Add(new UnderwaterRefractionEffect());
-            effects.Add(new UnderwaterCausticsEffect());
-            effects.Add(new UnderwaterSunShaftsEffect());
-            effects.Add(new UnderwaterBlurredWaterLineEffect());
+            DiscoverEffects();
+        }
+
+        private void DiscoverEffects()
+        {
+            effects.Clear();
+
+            var effectTypes =
+                UnityEngine.Assemblies.CurrentAssemblies.GetLoadedAssemblies()
+                    .SelectMany(assembly =>
+                    {
+                        try
+                        {
+                            return assembly.GetTypes();
+                        }
+                        catch (ReflectionTypeLoadException e)
+                        {
+                            return e.Types.Where(t => t != null);
+                        }
+                    })
+                    .Where(type =>
+                           type != null &&
+                           !type.IsAbstract &&
+                           typeof(UnderwaterEffect).IsAssignableFrom(type) &&
+                           type.GetCustomAttribute<UnderwaterEffectAttribute>() != null)
+                    .OrderBy(type =>
+                        type.GetCustomAttribute<UnderwaterEffectAttribute>().Order);
+
+            foreach (Type type in effectTypes)
+            {
+                try
+                {
+                    if (Activator.CreateInstance(type) is UnderwaterEffect effect)
+                    {
+                        effects.Add(effect);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.LogException(e);
+                }
+            }
         }
 
         public override void RecordRenderGraph(
@@ -73,10 +110,10 @@ public sealed class UnderwaterEffectsFeature
             //
             foreach (UnderwaterEffect effect in effects)
             {
-                if (!effect.IsActive())
-                {
-                    continue;
-                }
+                // if (!effect.IsActive())
+                // {
+                //     continue;
+                // }
 
                 effect.RecordRenderGraph(
                     renderGraph,

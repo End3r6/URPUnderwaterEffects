@@ -4,12 +4,8 @@ using UnityEngine.Rendering;
 
 [Serializable]
 [VolumeComponentMenu("Underwater Effects/Underwater Refraction")]
-public sealed class UnderwaterRefractionVolume
-    : VolumeComponent
+public sealed class UnderwaterRefractionVolume : VolumeComponent
 {
-    public BoolParameter enabled =
-        new BoolParameter(true);
-
     [Header("Large Waves")]
     public ClampedFloatParameter largeScale =
         new ClampedFloatParameter(

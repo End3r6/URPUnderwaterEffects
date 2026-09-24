@@ -4,6 +4,7 @@ using UnityEngine.Rendering.RenderGraphModule;
 using UnityEngine.Rendering.RenderGraphModule.Util;
 using UnityEngine.Rendering.Universal;
 
+[UnderwaterEffect(UnderwaterEffectOrder.SunShafts)]
 public sealed class UnderwaterSunShaftsEffect : UnderwaterEffect<UnderwaterSunShaftsVolume>
 {
 
@@ -33,12 +34,6 @@ public sealed class UnderwaterSunShaftsEffect : UnderwaterEffect<UnderwaterSunSh
             CoreUtils.CreateEngineMaterial(
                 Shader.Find(
                     "Hidden/UnderwaterSunShafts"));
-    }
-
-    public override bool IsActive()
-    {
-        return Volume != null &&
-               Volume.enabled.value;
     }
 
     public override void RecordRenderGraph(RenderGraph renderGraph, ContextContainer frameData)
@@ -72,7 +67,7 @@ public sealed class UnderwaterSunShaftsEffect : UnderwaterEffect<UnderwaterSunSh
         bool usingCaustics =
             Volume.inheritCaustics.value &&
             caustics != null &&
-            caustics.enabled.value &&
+            caustics.active &&
             caustics.causticsTexture.value != null;
 
         if (usingCaustics)

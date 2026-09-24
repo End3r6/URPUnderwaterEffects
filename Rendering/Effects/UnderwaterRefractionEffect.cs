@@ -4,6 +4,7 @@ using UnityEngine.Rendering.RenderGraphModule;
 using UnityEngine.Rendering.RenderGraphModule.Util;
 using UnityEngine.Rendering.Universal;
 
+[UnderwaterEffect(UnderwaterEffectOrder.Refraction)]
 public sealed class UnderwaterRefractionEffect
     : UnderwaterEffect<UnderwaterRefractionVolume>
 {
@@ -17,17 +18,11 @@ public sealed class UnderwaterRefractionEffect
                     "Hidden/UnderwaterRefraction"));
     }
 
-    public override bool IsActive()
-    {
-        return Volume != null &&
-               Volume.enabled.value;
-    }
-
     public override void RecordRenderGraph(
         RenderGraph renderGraph,
         ContextContainer frameData)
     {
-        if (Volume == null)
+        if (!IsActive())
             return;
 
         UniversalResourceData resourceData =

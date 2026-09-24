@@ -7,8 +7,6 @@ using UnityEngine.Rendering;
 public sealed class UnderwaterSunShaftsVolume
     : VolumeComponent
 {
-    public BoolParameter enabled =
-        new BoolParameter(true);
 
     [Header("Caustics Integration")]
     public BoolParameter inheritCaustics =

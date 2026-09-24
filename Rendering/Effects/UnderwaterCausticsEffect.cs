@@ -1,9 +1,11 @@
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.RenderGraphModule;
 using UnityEngine.Rendering.RenderGraphModule.Util;
 using UnityEngine.Rendering.Universal;
 
+[UnderwaterEffect(UnderwaterEffectOrder.Caustics)]
 public sealed class UnderwaterCausticsEffect
     : UnderwaterEffect<UnderwaterCausticsVolume>
 {
@@ -19,23 +21,19 @@ public sealed class UnderwaterCausticsEffect
 
     public override bool IsActive()
     {
-        return Volume != null &&
-               Volume.enabled.value &&
-               Volume.causticsTexture.value != null;
+        if (Volume == null)
+            return false;
+
+        return Volume.parameters.Any(p => p.overrideState) && Volume.causticsTexture.value != null;
     }
 
-    public override void RecordRenderGraph(
-        RenderGraph renderGraph,
-        ContextContainer frameData)
+    public override void RecordRenderGraph(RenderGraph renderGraph, ContextContainer frameData)
     {
         if (!IsActive())
             return;
 
         UniversalResourceData resourceData =
             frameData.Get<UniversalResourceData>();
-
-        UniversalLightData lightData =
-            frameData.Get<UniversalLightData>();
 
         if (resourceData.isActiveTargetBackBuffer)
             return;

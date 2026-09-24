@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-3422497333888553321
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5ebd5637e5134349b68f4d7a71fca81, type: 3}
+  m_Name: UnderwaterBlurredWaterLineVolume
+  m_EditorClassIdentifier: Assembly-CSharp::UnderwaterBlurredWaterLineVolume
+  active: 0
+  color:
+    m_OverrideState: 1
+    m_Value: {r: 1, g: 1, b: 1, a: 1}
+  intensity:
+    m_OverrideState: 1
+    m_Value: 0
+  thickness:
+    m_OverrideState: 1
+    m_Value: 0
+  softness:
+    m_OverrideState: 1
+    m_Value: 0.001
+  verticalBlur:
+    m_OverrideState: 1
+    m_Value: 0
+  highlightThickness:
+    m_OverrideState: 1
+    m_Value: 0
+  refractionStrength:
+    m_OverrideState: 1
+    m_Value: 0
+  highlightIntensity:
+    m_OverrideState: 1
+    m_Value: 0
+  highlightFineNoiseScale:
+    m_OverrideState: 1
+    m_Value: 0
+  highlightBroadNoiseScale:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7fd9488000d3734a9e00ee676215985, type: 3}
+  m_Name: Global Volume Profile
+  m_EditorClassIdentifier: Unity.RenderPipelines.Core.Runtime::UnityEngine.Rendering.VolumeProfile
+  components:
+  - {fileID: -3422497333888553321}

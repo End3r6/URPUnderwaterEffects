@@ -13,9 +13,6 @@ MonoBehaviour:
   m_Name: UnderwaterBlurredWaterLineVolume
   m_EditorClassIdentifier: Assembly-CSharp::UnderwaterBlurredWaterLineVolume
   active: 1
-  enabled:
-    m_OverrideState: 1
-    m_Value: 1
   color:
     m_OverrideState: 1
     m_Value: {r: 0.69123054, g: 0.8978563, b: 0.9433962, a: 1}
@@ -77,9 +74,6 @@ MonoBehaviour:
   m_Name: UnderwaterCausticsVolume
   m_EditorClassIdentifier: Assembly-CSharp::UnderwaterCausticsVolume
   active: 1
-  enabled:
-    m_OverrideState: 1
-    m_Value: 1
   causticsTexture:
     m_OverrideState: 1
     m_Value: {fileID: 2800000, guid: e391256aba824482bb9311d839bf7d7b, type: 3}
@@ -130,9 +124,6 @@ MonoBehaviour:
   m_Name: UnderwaterFogVolume
   m_EditorClassIdentifier: Assembly-CSharp::UnderwaterFogVolume
   active: 1
-  enabled:
-    m_OverrideState: 1
-    m_Value: 1
   fogColor:
     m_OverrideState: 1
     m_Value: {r: 0, g: 0.28195485, b: 0.8, a: 1}
@@ -167,9 +158,6 @@ MonoBehaviour:
   m_Name: UnderwaterRefractionVolume
   m_EditorClassIdentifier: Assembly-CSharp::UnderwaterRefractionVolume
   active: 1
-  enabled:
-    m_OverrideState: 1
-    m_Value: 1
   largeScale:
     m_OverrideState: 1
     m_Value: 14
@@ -210,9 +198,6 @@ MonoBehaviour:
   m_Name: UnderwaterSunShaftsVolume
   m_EditorClassIdentifier: Assembly-CSharp::UnderwaterSunShaftsVolume
   active: 1
-  enabled:
-    m_OverrideState: 1
-    m_Value: 1
   inheritCaustics:
     m_OverrideState: 1
     m_Value: 1
