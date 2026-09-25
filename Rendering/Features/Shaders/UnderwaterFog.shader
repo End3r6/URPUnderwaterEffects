@@ -123,9 +123,8 @@ Shader "Hidden/UnderwaterFog"
                 if (hasTransparent)
                 {
                     float opticalDepth = transparentDepth + thickness;
-                    float idk = thickness * transmittance;
 
-                    transparentContribution = (exp(-thickness / max(0.001, _Vision)));
+                    transparentContribution = (exp(-opticalDepth / max(0.001, _Vision)));
                     fogAmount = lerp(fogAmount, fogAmount - transparentContribution, transmittance);
                 }
                 
