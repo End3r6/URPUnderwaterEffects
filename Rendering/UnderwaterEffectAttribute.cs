@@ -6,12 +6,12 @@ using System;
 /// Current order:
 ///
 ///     0    WaterLine
-///     50   Transparent Depth Texture
-///     100  Fog
-///     200  Refraction
-///     300  Caustics
-///     400  SunShafts
-///     500  BlurredWaterLine
+///     100   Transparent Depth Texture
+///     200  Caustics
+///     300  Fog
+///     400  Refraction
+///     500  SunShafts
+///     600  BlurredWaterLine
 ///
 /// Examples:
 ///

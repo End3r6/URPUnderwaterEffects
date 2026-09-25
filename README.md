@@ -30,6 +30,17 @@ Current Effects:
 - Water Line Refraction
 - Color Changes Based On Main Light and Ambient Color
 
+Framework Features:
+
+- Shared underwater rendering framework
+- Custom underwater effect support
+- Effect ordering system
+- Shared underwater resources
+- Transparent depth support
+- Per-object transparent fog participation
+- Volume driven workflow
+- RenderGraph implementation
+
 Also Included:
 
 - Bubble particle prefab
@@ -58,20 +69,46 @@ Older versions required multiple renderer features. The current version only req
 
 ---
 
+## Transparent Depth Support
+
+Transparent objects can participate in underwater fog.
+
+Add a `TransparentDepthSettings` component to any renderer that should contribute to the transparent depth system.
+
+Per-object settings currently include:
+
+- Thickness
+- Opacity
+
+The transparent depth system generates a global texture \_TransparentDepthTexture which can be sampled by custom underwater effects.
+This allows objects such as:
+
+- Glass
+- Observation domes
+- Force fields
+- Portals
+- Shields
+
+to integrate with underwater fog and attenuation.
+
+---
+
 ## Performance
 
-A lot of work has gone into performance during the RenderGraph rewrite.
+Version 4.0 introduced a full RenderGraph rewrite and a shared underwater rendering framework.
 
-Current effects make use of:
+Current features include:
 
 - RenderGraph
 - Shared rendering resources
+- Shared underwater masks
 - Downsampling
 - Blue noise sampling
 - Bilateral blurs
-- Shared underwater masks
+- Effect ordering
+- Resource reuse between effects
 
-The goal is to keep the full underwater stack as inexpensive as possible while maintaining visual quality.
+The goal is to keep the underwater stack modular, extensible, and as inexpensive as possible while maintaining visual quality.
 
 ---
 
@@ -99,9 +136,9 @@ If you create something cool with the package, submit an issue with a few screen
 
 ## Known Issues
 
-- Fog currently does not affect transparent objects.
+- The transparent depth optical model is still being refined and may continue to evolve in future releases.
 
-I am actively working on this one and it should be supported shortly.
+If you encounter issues or have suggestions, please open an issue on GitHub.
 
 ---
 
