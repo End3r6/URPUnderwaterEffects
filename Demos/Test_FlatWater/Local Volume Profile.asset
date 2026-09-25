@@ -1,0 +1,247 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-7400664800653107975
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5ebd5637e5134349b68f4d7a71fca81, type: 3}
+  m_Name: UnderwaterBlurredWaterLineVolume
+  m_EditorClassIdentifier: Assembly-CSharp::UnderwaterBlurredWaterLineVolume
+  active: 1
+  color:
+    m_OverrideState: 1
+    m_Value: {r: 0.69123054, g: 0.8978563, b: 0.9433962, a: 1}
+  intensity:
+    m_OverrideState: 1
+    m_Value: 1
+  thickness:
+    m_OverrideState: 1
+    m_Value: 21.9
+  softness:
+    m_OverrideState: 1
+    m_Value: 0.645
+  verticalBlur:
+    m_OverrideState: 1
+    m_Value: 9.1
+  highlightThickness:
+    m_OverrideState: 1
+    m_Value: 3.3
+  refractionStrength:
+    m_OverrideState: 1
+    m_Value: 2.8
+  highlightIntensity:
+    m_OverrideState: 1
+    m_Value: 0.38
+  highlightFineNoiseScale:
+    m_OverrideState: 1
+    m_Value: 24.9
+  highlightBroadNoiseScale:
+    m_OverrideState: 1
+    m_Value: 4.1
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7fd9488000d3734a9e00ee676215985, type: 3}
+  m_Name: Local Volume Profile
+  m_EditorClassIdentifier: Unity.RenderPipelines.Core.Runtime::UnityEngine.Rendering.VolumeProfile
+  components:
+  - {fileID: 8126519855279684698}
+  - {fileID: 8849768495860309383}
+  - {fileID: 5275001513231379515}
+  - {fileID: 8971946443768061764}
+  - {fileID: -7400664800653107975}
+--- !u!114 &5275001513231379515
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1375eefcf6a9f240b3ed2e052ac0bcb, type: 3}
+  m_Name: UnderwaterCausticsVolume
+  m_EditorClassIdentifier: Assembly-CSharp::UnderwaterCausticsVolume
+  active: 1
+  causticsTexture:
+    m_OverrideState: 1
+    m_Value: {fileID: 2800000, guid: e391256aba824482bb9311d839bf7d7b, type: 3}
+    dimension: 1
+  range:
+    m_OverrideState: 1
+    m_Value: 87
+  intensity:
+    m_OverrideState: 1
+    m_Value: 30.5
+  speed:
+    m_OverrideState: 1
+    m_Value: 1.1
+  tiling:
+    m_OverrideState: 1
+    m_Value: 21
+  coverage:
+    m_OverrideState: 1
+    m_Value: 0
+  lightDirectionBias:
+    m_OverrideState: 1
+    m_Value: 0.23
+  lightStretch:
+    m_OverrideState: 1
+    m_Value: 1
+  rgbSplit:
+    m_OverrideState: 1
+    m_Value: 0.0024
+  color:
+    m_OverrideState: 1
+    m_Value: {r: 1, g: 1, b: 1, a: 1}
+  depthFade:
+    m_OverrideState: 1
+    m_Value: 1.29
+  underwaterOnly:
+    m_OverrideState: 1
+    m_Value: 1
+--- !u!114 &8126519855279684698
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2cc2ac6cac4d40e18e13d0b9d0fac79, type: 3}
+  m_Name: UnderwaterFogVolume
+  m_EditorClassIdentifier: Assembly-CSharp::UnderwaterFogVolume
+  active: 1
+  fogColor:
+    m_OverrideState: 1
+    m_Value: {r: 0, g: 0.8, b: 0.20854488, a: 1}
+  vision:
+    m_OverrideState: 1
+    m_Value: 20
+  absorption:
+    m_OverrideState: 1
+    m_Value: 1.24
+  desaturation:
+    m_OverrideState: 1
+    m_Value: 0.819
+  redAbsorption:
+    m_OverrideState: 1
+    m_Value: 0.95
+  greenAbsorption:
+    m_OverrideState: 1
+    m_Value: 0.55
+  debugView:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &8849768495860309383
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02e19290877a3fd469072a68b1f38088, type: 3}
+  m_Name: UnderwaterRefractionVolume
+  m_EditorClassIdentifier: Assembly-CSharp::UnderwaterRefractionVolume
+  active: 1
+  largeScale:
+    m_OverrideState: 1
+    m_Value: 14
+  largeStrength:
+    m_OverrideState: 1
+    m_Value: 0.26
+  smallScale:
+    m_OverrideState: 1
+    m_Value: 37
+  smallStrength:
+    m_OverrideState: 1
+    m_Value: 0.014
+  speed:
+    m_OverrideState: 1
+    m_Value: 1
+  flowDirection:
+    m_OverrideState: 1
+    m_Value: {x: 0.5, y: 0.15}
+  depthDistance:
+    m_OverrideState: 1
+    m_Value: 27
+  edgeStrength:
+    m_OverrideState: 1
+    m_Value: 2
+  chromaticStrength:
+    m_OverrideState: 1
+    m_Value: 0.0077
+--- !u!114 &8971946443768061764
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7555d0f82129a34fa6580da036354f2, type: 3}
+  m_Name: UnderwaterSunShaftsVolume
+  m_EditorClassIdentifier: Assembly-CSharp::UnderwaterSunShaftsVolume
+  active: 1
+  inheritCaustics:
+    m_OverrideState: 1
+    m_Value: 1
+  blueNoise:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  rayMap:
+    m_OverrideState: 1
+    m_Value: {fileID: 2800000, guid: e391256aba824482bb9311d839bf7d7b, type: 3}
+    dimension: 1
+  tint:
+    m_OverrideState: 1
+    m_Value: {r: 0.85849047, g: 0.94917345, b: 1, a: 1}
+  intensity:
+    m_OverrideState: 1
+    m_Value: 7.9
+  scattering:
+    m_OverrideState: 1
+    m_Value: 0.11
+  threshold:
+    m_OverrideState: 1
+    m_Value: 0.082
+  scale:
+    m_OverrideState: 1
+    m_Value: 50
+  speed:
+    m_OverrideState: 1
+    m_Value: 1
+  steps:
+    m_OverrideState: 1
+    m_Value: 10
+  maxDistance:
+    m_OverrideState: 1
+    m_Value: 15
+  jitter:
+    m_OverrideState: 1
+    m_Value: 628
+  blurSamples:
+    m_OverrideState: 1
+    m_Value: 4
+  blurAmount:
+    m_OverrideState: 1
+    m_Value: 5.03
+  downsample:
+    m_OverrideState: 1
+    m_Value: 2
