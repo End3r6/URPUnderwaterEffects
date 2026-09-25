@@ -49,23 +49,7 @@ Also Included:
 
 ## How To Use
 
-Download the latest release or clone the repository.
-
-The difference is:
-
-- **Releases** contain the latest stable version.
-- **Source** contains the latest development version which may include experimental features, unfinished work, or bugs.
-
-### Setup
-
-1. Add the **Underwater Effects** renderer feature to your URP Renderer Asset.
-2. Create a Volume in your scene.
-3. Add the underwater volume overrides you want to use.
-4. Assign the water surface layer in the Water Line Mask effect.
-
-Version 4.0.0 completely changed the workflow.
-
-Older versions required multiple renderer features. The current version only requires a single renderer feature and all configuration is done through Volumes.
+See the [Set Up Guide](https://github.com/End3r6/URPUnderwaterEffects/wiki/Setup-Guide) for information about how to get started!
 
 ---
 
