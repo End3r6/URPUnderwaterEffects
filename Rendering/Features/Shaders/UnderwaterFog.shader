@@ -42,12 +42,19 @@ Shader "Hidden/UnderwaterFog"
             float _DebugView;
 
             half4 _FogColor;
+            float _Absorption;
+            float _Desaturation;
+            float _RedAbsorption;
+            float _GreenAbsorption;
 
             TEXTURE2D(_BlitTexture);
             SAMPLER(sampler_BlitTexture);
 
             TEXTURE2D(_CameraDepthTexture);
             SAMPLER(sampler_CameraDepthTexture);
+
+            TEXTURE2D(_TransparentDepthTexture);
+            SAMPLER(sampler_TransparentDepthTexture);
 
             TEXTURE2D(_WaterLineMask);
             SAMPLER(sampler_WaterLineMask);
@@ -83,6 +90,18 @@ Shader "Hidden/UnderwaterFog"
 
                 float underwaterMask =
                     saturate(1.0 - horizonMask);
+                
+                float4 transparentData =
+                    SAMPLE_TEXTURE2D(
+                        _TransparentDepthTexture,
+                        sampler_TransparentDepthTexture,
+                        input.uv);
+
+                float transparentDepth = transparentData.r;
+
+                float thickness = transparentData.g;
+
+                float transmittance = transparentData.b;
 
                 float rawDepth =
                     SAMPLE_TEXTURE2D(
@@ -90,14 +109,26 @@ Shader "Hidden/UnderwaterFog"
                         sampler_CameraDepthTexture,
                         input.uv).r;
 
-                float linearDepth =
+                float opaqueDepth =
                     LinearEyeDepth(
                         rawDepth,
                         _ZBufferParams);
 
-                float fogAmount =
-                    1.0 - exp(-linearDepth / max(0.001, _Vision));
+                float linearDepth = opaqueDepth;
+                float fogAmount = 1.0 - exp(-linearDepth / max(0.001, _Vision));
 
+                bool hasTransparent = transparentDepth > 0.001;
+
+                float transparentContribution = 0;
+                if (hasTransparent)
+                {
+                    float opticalDepth = transparentDepth + thickness;
+                    float idk = thickness * transmittance;
+
+                    transparentContribution = (exp(-thickness / max(0.001, _Vision)));
+                    fogAmount = lerp(fogAmount, fogAmount - transparentContribution, transmittance);
+                }
+                
                 fogAmount *= underwaterMask;
 
                 //
@@ -105,8 +136,8 @@ Shader "Hidden/UnderwaterFog"
                 //
                 float3 absorbedColor = sceneColor;
 
-                absorbedColor.r *= lerp(1.0, 0.05, fogAmount);
-                absorbedColor.g *= lerp(1.0, 0.45, fogAmount);
+                absorbedColor.r *= lerp(1.0, 1 - _RedAbsorption, fogAmount * _Absorption);
+                absorbedColor.g *= lerp(1.0, 1 - _GreenAbsorption, fogAmount * _Absorption);
 
                 //
                 // Underwater visibility loses saturation.
@@ -123,7 +154,7 @@ Shader "Hidden/UnderwaterFog"
                     lerp(
                         absorbedColor,
                         luminance.xxx,
-                        fogAmount * 0.65);
+                        fogAmount * _Desaturation);
 
                 //
                 // Blend into water color.
@@ -146,7 +177,7 @@ Shader "Hidden/UnderwaterFog"
                 if (_DebugView > 0.5)
                 {
                     return float4(
-                        underwaterMask.xxx,
+                        transparentData.rrr,
                         1);
                 }
 

@@ -7,8 +7,7 @@ using UnityEngine.Rendering;
 using UnityEngine.Rendering.RenderGraphModule;
 using UnityEngine.Rendering.Universal;
 
-public sealed class UnderwaterEffectsFeature
-    : ScriptableRendererFeature
+public sealed class UnderwaterEffectsFeature : ScriptableRendererFeature
 {
     private UnderwaterEffectsRenderPass pass;
 
@@ -20,9 +19,7 @@ public sealed class UnderwaterEffectsFeature
         };
     }
 
-    public override void AddRenderPasses(
-        ScriptableRenderer renderer,
-        ref RenderingData renderingData)
+    public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
     {
         if (renderingData.cameraData.cameraType ==
             CameraType.Preview)
@@ -33,14 +30,12 @@ public sealed class UnderwaterEffectsFeature
         renderer.EnqueuePass(pass);
     }
 
-    protected override void Dispose(
-        bool disposing)
+    protected override void Dispose(bool disposing)
     {
         pass?.Dispose();
     }
 
-    private sealed class UnderwaterEffectsRenderPass
-        : ScriptableRenderPass
+    private sealed class UnderwaterEffectsRenderPass : ScriptableRenderPass
     {
         private readonly List<UnderwaterEffect> effects = new();
 
@@ -69,19 +64,23 @@ public sealed class UnderwaterEffectsFeature
                             return e.Types.Where(t => t != null);
                         }
                     })
-                    .Where(type =>
-                           type != null &&
-                           !type.IsAbstract &&
-                           typeof(UnderwaterEffect).IsAssignableFrom(type) &&
-                           type.GetCustomAttribute<UnderwaterEffectAttribute>() != null)
-                    .OrderBy(type =>
-                        type.GetCustomAttribute<UnderwaterEffectAttribute>().Order);
+                    .Select(type => new
+                    {
+                        Type = type,
+                        Attribute = type?.GetCustomAttribute<UnderwaterEffectAttribute>()
+                    })
+                    .Where(x =>
+                           x != null &&
+                           !x.Type.IsAbstract &&
+                           typeof(UnderwaterEffect).IsAssignableFrom(x.Type) &&
+                           x.Attribute != null)
+                    .OrderBy(x => x.Attribute.Order);
 
-            foreach (Type type in effectTypes)
+            foreach (var x in effectTypes)
             {
                 try
                 {
-                    if (Activator.CreateInstance(type) is UnderwaterEffect effect)
+                    if (Activator.CreateInstance(x.Type) is UnderwaterEffect effect)
                     {
                         effects.Add(effect);
                     }
@@ -98,36 +97,14 @@ public sealed class UnderwaterEffectsFeature
             ContextContainer frameData)
         {
             //
-            // Shared resources.
-            //
-
-            GenerateTransparentDepth(
-                renderGraph,
-                frameData);
-
-            //
             // Execute effects.
             //
             foreach (UnderwaterEffect effect in effects)
             {
-                // if (!effect.IsActive())
-                // {
-                //     continue;
-                // }
-
                 effect.RecordRenderGraph(
                     renderGraph,
                     frameData);
             }
-        }
-
-        private void GenerateTransparentDepth(
-            RenderGraph renderGraph,
-            ContextContainer frameData)
-        {
-            //
-            // Future transparent depth pass.
-            //
         }
 
         public void Dispose()

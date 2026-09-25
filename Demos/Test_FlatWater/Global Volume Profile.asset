@@ -83,7 +83,7 @@ MonoBehaviour:
     m_Value: 87
   intensity:
     m_OverrideState: 1
-    m_Value: 25
+    m_Value: 30.5
   speed:
     m_OverrideState: 1
     m_Value: 1.1
@@ -129,21 +129,21 @@ MonoBehaviour:
     m_Value: {r: 0, g: 0.28195485, b: 0.8, a: 1}
   vision:
     m_OverrideState: 1
-    m_Value: 13
+    m_Value: 20
   absorption:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 1.24
   desaturation:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 0.819
   redAbsorption:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 0.95
   greenAbsorption:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 0.55
   debugView:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 0
 --- !u!114 &8849768495860309383
 MonoBehaviour:
@@ -214,7 +214,7 @@ MonoBehaviour:
     m_Value: {r: 0.85849047, g: 0.94917345, b: 1, a: 1}
   intensity:
     m_OverrideState: 1
-    m_Value: 14.1
+    m_Value: 7.9
   scattering:
     m_OverrideState: 1
     m_Value: 0.11

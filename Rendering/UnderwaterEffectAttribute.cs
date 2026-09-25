@@ -6,6 +6,7 @@ using System;
 /// Current order:
 ///
 ///     0    WaterLine
+///     50   Transparent Depth Texture
 ///     100  Fog
 ///     200  Refraction
 ///     300  Caustics
@@ -33,15 +34,17 @@ public enum UnderwaterEffectOrder
 
     WaterLine = 0,
 
-    Fog = 100,
+    TransparentDepthTexture = 100,
 
-    Refraction = 200,
+    Caustics = 200,
 
-    Caustics = 300,
+    Fog = 300,
 
-    SunShafts = 400,
+    Refraction = 400,
 
-    BlurredWaterLine = 500
+    SunShafts = 500,
+
+    BlurredWaterLine = 600
 }
 
 [AttributeUsage(AttributeTargets.Class)]

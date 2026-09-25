@@ -22,7 +22,7 @@ public sealed class UnderwaterCausticsVolume
         new ClampedFloatParameter(
             1f,
             0f,
-            25f);
+            50f);
 
     [Header("Animation")]
     public ClampedFloatParameter speed =

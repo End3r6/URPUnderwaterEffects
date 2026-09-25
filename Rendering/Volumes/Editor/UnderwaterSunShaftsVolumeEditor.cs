@@ -4,11 +4,8 @@ using UnityEngine;
 
 [CustomEditor(
     typeof(UnderwaterSunShaftsVolume))]
-public sealed class UnderwaterSunShaftsVolumeEditor
-    : VolumeComponentEditor
+public sealed class UnderwaterSunShaftsVolumeEditor : VolumeComponentEditor
 {
-    SerializedDataParameter enabled;
-
     SerializedDataParameter inheritCaustics;
 
     SerializedDataParameter rayMap;
@@ -36,11 +33,6 @@ public sealed class UnderwaterSunShaftsVolumeEditor
         var o = new PropertyFetcher<
             UnderwaterSunShaftsVolume>(
                 serializedObject);
-
-        enabled =
-            Unpack(
-                o.Find(
-                    x => x.active));
 
         inheritCaustics =
             Unpack(
@@ -120,8 +112,6 @@ public sealed class UnderwaterSunShaftsVolumeEditor
 
     public override void OnInspectorGUI()
     {
-        PropertyField(enabled);
-
         EditorGUILayout.Space();
 
         PropertyField(
