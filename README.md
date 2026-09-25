@@ -114,15 +114,9 @@ The goal is to keep the underwater stack modular, extensible, and as inexpensive
 
 ## Creating Additional Effects
 
-The package now uses a shared underwater framework.
+The package now uses a shared underwater framework which enables easy creation of custom effects.
 
-Effects generate and use shared resources such as:
-
-- `_WaterLineMask`
-
-If you want to create additional underwater effects, sample `_WaterLineMask` inside your shader to separate underwater pixels from the air above the surface.
-
-Many of the included effects use this workflow, so the source code is a good place to start if you're looking to build your own extensions.
+Go to the [wiki](https://github.com/End3r6/URPUnderwaterEffects/wiki/Creating-Custom-Effects) to learn how to make custom effects.
 
 ---
 
