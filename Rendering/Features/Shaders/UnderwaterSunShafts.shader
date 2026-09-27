@@ -72,6 +72,11 @@ Shader "Hidden/UnderwaterSunShafts"
             real _Scale;
             real _Speed;
 
+            real ShadowAtten(real3 worldPosition)
+            {
+                return MainLightRealtimeShadow(TransformWorldToShadowCoord(worldPosition));
+            }
+
             real WaveAten(real3 worldPosition)
             {
                 Light mainLight =
@@ -182,15 +187,19 @@ Shader "Hidden/UnderwaterSunShafts"
 
                 real accumFog = 0;
                 real kernelColor = ComputeScattering(dot(rayDirection, -sunDir));
-
+                
                 //we ask for the shadow map value at different depths, if the sample is in light we compute the contribution at that point and add it
                 for (real j = 0; j < _Steps - 1; j++)
                 {
-                    real shadowMapValue = WaveAten(currentPosition);
+                    real shadowMap = ShadowAtten(currentPosition);
                     
                     //if it is in light
-                    accumFog += step(_Threshold, shadowMapValue) * kernelColor;
-
+                    if(shadowMap > 0)
+                    {
+                        real attenuation = WaveAten(currentPosition);
+                        accumFog += step(_Threshold, attenuation) * kernelColor;
+                    }
+                    
                     currentPosition += stepVector;
                 }
 

@@ -67,6 +67,11 @@ Shader "Hidden/UnderwaterCaustics"
             TEXTURE2D(_CameraDepthTexture);
             SAMPLER(sampler_CameraDepthTexture);
 
+            // float ShadowAtten(float3 worldPosition)
+            // {
+            //     return MainLightRealtimeShadow(TransformWorldToShadowCoord(worldPosition));
+            // }
+
             Varyings Vert(
                 Attributes input)
             {
