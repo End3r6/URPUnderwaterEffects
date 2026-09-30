@@ -21,6 +21,7 @@ Shader "Hidden/UnderwaterBlurredWaterLine"
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Assets/URPUnderwaterEffects/Rendering/Features/Shaders/HLSL/Noise.hlsl"
+            #include "./HLSL/WaterMask.hlsl"
 
             struct Attributes
             {
@@ -46,9 +47,6 @@ Shader "Hidden/UnderwaterBlurredWaterLine"
             TEXTURE2D(_BlitTexture);
             SAMPLER(sampler_BlitTexture);
 
-            TEXTURE2D(_WaterLineMask);
-            SAMPLER(sampler_WaterLineMask);
-
             float4 _WaterLineColor;
 
             float _Intensity;
@@ -62,9 +60,9 @@ Shader "Hidden/UnderwaterBlurredWaterLine"
             float _RefractionStrength;
             float _HighlightIntensity;
 
-            float SampleWaterMask(float2 uv)
+            float GetWaterMask(float2 uv)
             {
-                return SAMPLE_TEXTURE2D(_WaterLineMask, sampler_WaterLineMask, uv).r;
+                return 1 - GetFinalUnderwaterMask(uv, UNDERWATER_PASS_WATER_LINE);
             }
 
             float3 SampleSceneBlur(float2 uv, float blurRadius)
@@ -94,14 +92,14 @@ Shader "Hidden/UnderwaterBlurredWaterLine"
 
                 float pixelUV = 1.0 / max(1.0, _ScreenParams.y);
                 float maskDistance = max(1.0, _Thickness) * pixelUV;
-                float maskAtSurface = SampleWaterMask(uv);
-                float maskAbove = SampleWaterMask(uv + float2(0, maskDistance));
+                float maskAtSurface = GetWaterMask(uv);
+                float maskAbove = GetWaterMask(uv + float2(0, maskDistance));
                 float signedEdge = maskAbove - maskAtSurface;
                 float edgeMask = smoothstep(0.001, max(0.01, _Softness), abs(signedEdge));
 
                 float highlightDistance = max(1.0, _HighlightThickness) * pixelUV;
-                float highlightAtSurface = SampleWaterMask(uv);
-                float highlightAbove = SampleWaterMask(uv + float2(0, highlightDistance));
+                float highlightAtSurface = GetWaterMask(uv);
+                float highlightAbove = GetWaterMask(uv + float2(0, highlightDistance));
                 float topEdgeDifference = highlightAbove - highlightAtSurface;
                 float topEdgeMask = smoothstep(0.001, max(0.01, _Softness), abs(topEdgeDifference));
                 float bottomEdgeMask = smoothstep(0.001, max(0.01, _Softness), abs(topEdgeDifference));

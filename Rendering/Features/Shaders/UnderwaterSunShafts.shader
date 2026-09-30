@@ -15,12 +15,13 @@ Shader "Hidden/UnderwaterSunShafts"
 
             #pragma prefer_hlslcc gles
             #pragma exclude_renderers d3d11_9x
+            #pragma target 4.5
 
             #pragma vertex vert
             #pragma fragment frag
             #pragma multi_compile _  _MAIN_LIGHT_SHADOWS_CASCADE
             
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
+            #include "./HLSL/WaterMask.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 
             //Boilerplate code, we aren't doind anything with our vertices or any other input info,
@@ -55,9 +56,6 @@ Shader "Hidden/UnderwaterSunShafts"
 
             TEXTURE2D(_NoiseTex);
             SAMPLER(sampler_NoiseTex);
-
-            TEXTURE2D(_WaterLineMask);
-            SAMPLER(sampler_WaterLineMask);
 
             TEXTURE2D(_BlueNoise);
             SAMPLER(sampler_BlueNoise);
@@ -99,12 +97,18 @@ Shader "Hidden/UnderwaterSunShafts"
             real3 GetWorldPos(real2 uv)
             {
                 #if UNITY_REVERSED_Z
-                    real depth = SampleSceneDepth(uv);
+                    real depth = SampleRawDepth(uv);
                 #else
-                    // Adjust z to match NDC for OpenGL
-                    real depth = lerp(UNITY_NEAR_CLIP_VALUE, 1, SampleSceneDepth(uv));
+                    real depth = lerp(
+                        UNITY_NEAR_CLIP_VALUE,
+                        1,
+                        SampleRawDepth(uv));
                 #endif
-                return ComputeWorldSpacePosition(uv, depth, UNITY_MATRIX_I_VP);
+
+                return ComputeWorldSpacePosition(
+                    uv,
+                    depth,
+                    UNITY_MATRIX_I_VP);
             }
 
             // Mie scaterring approximated with Henyey-Greenstein phase function.
@@ -144,11 +148,9 @@ Shader "Hidden/UnderwaterSunShafts"
 
             half4 frag(Varyings i) : SV_Target
             {
-                real waterLineMask = SAMPLE_TEXTURE2D(_WaterLineMask, sampler_WaterLineMask, i.uv).r;
-                if (waterLineMask > .99)
-                {
+                real underwaterMask = GetFinalUnderwaterMask(i.uv, UNDERWATER_PASS_SUN_SHAFTS);
+                if (underwaterMask <= 0.001)
                     return 0;
-                }
 
                 //first we get the world space position of every pixel on screen
                 real3 worldPos = GetWorldPos(i.uv);
@@ -205,7 +207,7 @@ Shader "Hidden/UnderwaterSunShafts"
 
                 //we need the average value, so we divide between the amount of samples 
                 accumFog /= _Steps;
-                accumFog *= (1 - waterLineMask);
+                accumFog *= underwaterMask;
                 
                 return accumFog;
             }

@@ -25,6 +25,7 @@ Shader "Hidden/UnderwaterRefraction"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
             #include "./HLSL/Noise.hlsl"
+            #include "./HLSL/WaterMask.hlsl"
 
             struct Attributes
             {
@@ -55,12 +56,6 @@ Shader "Hidden/UnderwaterRefraction"
 
             TEXTURE2D(_BlitTexture);
             SAMPLER(sampler_BlitTexture);
-
-            TEXTURE2D(_WaterLineMask);
-            SAMPLER(sampler_WaterLineMask);
-
-            TEXTURE2D(_CameraDepthTexture);
-            SAMPLER(sampler_CameraDepthTexture);
 
             float3 NormalFromHeight(
                 float value,
@@ -107,20 +102,13 @@ Shader "Hidden/UnderwaterRefraction"
             {
                 float2 uv = input.uv;
 
-                float waterMask =
-                    SAMPLE_TEXTURE2D(
-                        _WaterLineMask,
-                        sampler_WaterLineMask,
-                        uv).r;
-
                 float underwaterMask =
-                    1.0 - waterMask;
+                    GetFinalUnderwaterMask(uv, UNDERWATER_PASS_REFRACTION);
 
-                float rawDepth =
-                    SAMPLE_TEXTURE2D(
-                        _CameraDepthTexture,
-                        sampler_CameraDepthTexture,
-                        uv).r;
+                float waterMask =
+                    1.0 - underwaterMask;
+
+                float rawDepth = SampleRawDepth(uv);
 
                 float linearDepth =
                     LinearEyeDepth(

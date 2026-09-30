@@ -26,6 +26,7 @@ Shader "Hidden/UnderwaterFog"
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+            #include "./HLSL/WaterMask.hlsl"
 
             struct Attributes
             {
@@ -50,14 +51,8 @@ Shader "Hidden/UnderwaterFog"
             TEXTURE2D(_BlitTexture);
             SAMPLER(sampler_BlitTexture);
 
-            TEXTURE2D(_CameraDepthTexture);
-            SAMPLER(sampler_CameraDepthTexture);
-
             TEXTURE2D(_TransparentDepthTexture);
             SAMPLER(sampler_TransparentDepthTexture);
-
-            TEXTURE2D(_WaterLineMask);
-            SAMPLER(sampler_WaterLineMask);
 
             Varyings Vert(Attributes input)
             {
@@ -76,43 +71,19 @@ Shader "Hidden/UnderwaterFog"
 
             half4 Frag(Varyings input) : SV_Target
             {
-                float3 sceneColor =
-                    SAMPLE_TEXTURE2D(
-                        _BlitTexture,
-                        sampler_BlitTexture,
-                        input.uv).rgb;
+                float3 sceneColor = SAMPLE_TEXTURE2D(_BlitTexture, sampler_BlitTexture, input.uv).rgb;
 
-                float horizonMask =
-                    SAMPLE_TEXTURE2D(
-                        _WaterLineMask,
-                        sampler_WaterLineMask,
-                        input.uv).r;
-
-                float underwaterMask =
-                    saturate(1.0 - horizonMask);
+                float underwaterMask = GetFinalUnderwaterMask(input.uv, UNDERWATER_PASS_FOG);
+                float airMask = GetAirMask(input.uv);
                 
-                float4 transparentData =
-                    SAMPLE_TEXTURE2D(
-                        _TransparentDepthTexture,
-                        sampler_TransparentDepthTexture,
-                        input.uv);
-
+                float4 transparentData = SAMPLE_TEXTURE2D(_TransparentDepthTexture, sampler_TransparentDepthTexture, input.uv);
                 float transparentDepth = transparentData.r;
 
                 float thickness = transparentData.g;
-
                 float transmittance = transparentData.b;
 
-                float rawDepth =
-                    SAMPLE_TEXTURE2D(
-                        _CameraDepthTexture,
-                        sampler_CameraDepthTexture,
-                        input.uv).r;
-
-                float opaqueDepth =
-                    LinearEyeDepth(
-                        rawDepth,
-                        _ZBufferParams);
+                float rawDepth = SAMPLE_TEXTURE2D(_CameraDepthTexture, sampler_CameraDepthTexture, input.uv).r;
+                float opaqueDepth = LinearEyeDepth(rawDepth, _ZBufferParams);
 
                 float linearDepth = opaqueDepth;
                 float fogAmount = 1.0 - exp(-linearDepth / max(0.001, _Vision));
@@ -141,48 +112,26 @@ Shader "Hidden/UnderwaterFog"
                 //
                 // Underwater visibility loses saturation.
                 //
-                float luminance =
-                    dot(
-                        absorbedColor,
-                        float3(
-                            0.299,
-                            0.587,
-                            0.114));
+                float luminance = dot(absorbedColor, float3(0.299, 0.587, 0.114));
 
-                float3 desaturated =
-                    lerp(
-                        absorbedColor,
-                        luminance.xxx,
-                        fogAmount * _Desaturation);
+                float3 desaturated = lerp(absorbedColor, luminance.xxx, fogAmount * _Desaturation);
 
                 //
                 // Blend into water color.
                 //
-                float3 underwaterColor =
-                    lerp(
-                        desaturated,
-                        _FogColor.rgb,
-                        fogAmount);
+                float3 underwaterColor = lerp(desaturated, _FogColor.rgb, fogAmount);
 
                 //
                 // Preserve visible world above water.
                 //
-                float3 finalColor =
-                    lerp(
-                        underwaterColor,
-                        sceneColor,
-                        horizonMask);
+                float3 finalColor = lerp(underwaterColor, sceneColor, airMask);
 
                 if (_DebugView > 0.5)
                 {
-                    return float4(
-                        transparentData.rrr,
-                        1);
+                    return float4(GetFinalUnderwaterMask(input.uv).xxx, 1);
                 }
 
-                return float4(
-                    finalColor,
-                    1);
+                return float4(finalColor, 1);
             }
 
             ENDHLSL

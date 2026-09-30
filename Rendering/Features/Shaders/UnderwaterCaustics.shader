@@ -28,6 +28,7 @@ Shader "Hidden/UnderwaterCaustics"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 
             #include "./HLSL/Caustics.hlsl"
+            #include "./HLSL/WaterMask.hlsl"
 
             struct Attributes
             {
@@ -60,12 +61,6 @@ Shader "Hidden/UnderwaterCaustics"
 
             TEXTURE2D(_BlitTexture);
             SAMPLER(sampler_BlitTexture);
-
-            TEXTURE2D(_WaterLineMask);
-            SAMPLER(sampler_WaterLineMask);
-
-            TEXTURE2D(_CameraDepthTexture);
-            SAMPLER(sampler_CameraDepthTexture);
 
             // float ShadowAtten(float3 worldPosition)
             // {
@@ -100,22 +95,12 @@ Shader "Hidden/UnderwaterCaustics"
                         sampler_BlitTexture,
                         uv).rgb;
 
-                float waterMask =
-                    SAMPLE_TEXTURE2D(
-                        _WaterLineMask,
-                        sampler_WaterLineMask,
-                        uv).r;
-
                 float underwaterMask =
                     _UnderwaterOnly > 0.5
-                    ? 1.0 - waterMask
+                    ? GetFinalUnderwaterMask(uv, UNDERWATER_PASS_CAUSTICS)
                     : 1.0;
 
-                float rawDepth =
-                    SAMPLE_TEXTURE2D(
-                        _CameraDepthTexture,
-                        sampler_CameraDepthTexture,
-                        uv).r;
+                float rawDepth = SampleRawDepth(uv);
 
                 float linearDepth =
                     LinearEyeDepth(

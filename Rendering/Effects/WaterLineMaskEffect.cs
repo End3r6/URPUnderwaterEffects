@@ -29,6 +29,11 @@ public sealed class WaterLineMaskEffect
     {
     }
 
+    private sealed class MaskVolumePassData
+    {
+        public UnderwaterMaskVolume[] volumes;
+    }
+
     private readonly ShaderTagId[] shaderTags =
         {
             new ShaderTagId("UniversalForward"),
@@ -39,9 +44,16 @@ public sealed class WaterLineMaskEffect
 
     public Settings settings = new();
 
+    private const int MaxVolumes = 64;
+
     private readonly Material waterLineMaterial;
     private readonly Material upperSideMaterial;
     private readonly Material underSideMaterial;
+    private readonly Material inclusionVolumeMaterial;
+
+    private readonly Matrix4x4[] volumeWorldToLocal = new Matrix4x4[MaxVolumes];
+    private readonly Vector4[] volumeShapeData = new Vector4[MaxVolumes];
+    private readonly Vector4[] volumeSettings = new Vector4[MaxVolumes];
 
     private RTHandle waterLineMaskHandle;
 
@@ -58,6 +70,10 @@ public sealed class WaterLineMaskEffect
         underSideMaterial =
                 CoreUtils.CreateEngineMaterial(
                     Shader.Find("Hidden/UnderSide"));
+
+        inclusionVolumeMaterial =
+                CoreUtils.CreateEngineMaterial(
+                    Shader.Find("Hidden/InclusionVolume"));
     }
 
     public override bool IsActive()
@@ -245,6 +261,50 @@ public sealed class WaterLineMaskEffect
         }
 
         //
+        // Draw inclusions and Exclusions Volumes
+        //
+
+        int volumeCount = 0;
+        var volumes = Object.FindObjectsByType<UnderwaterMaskVolume>();
+
+        foreach (var volume in volumes)
+        {
+            if (volumeCount >= MaxVolumes)
+                break;
+
+            volumeWorldToLocal[volumeCount] =
+                volume.transform.worldToLocalMatrix;
+
+            switch (volume.shape)
+            {
+                case UnderwaterMaskVolume.Shape.Box:
+                    volumeShapeData[volumeCount] =
+                        new Vector4(0.5f, 0.5f, 0.5f, 0);
+                    break;
+
+                case UnderwaterMaskVolume.Shape.Sphere:
+                    volumeShapeData[volumeCount] =
+                        new Vector4(0.5f, 0, 0, 0);
+                    break;
+
+                case UnderwaterMaskVolume.Shape.Capsule:
+                    volumeShapeData[volumeCount] =
+                        new Vector4(0.5f, 0.5f, 0, 0);
+                    break;
+            }
+
+            volumeSettings[volumeCount] =
+                new Vector4(
+                    (int)volume.shape,
+                    (int)volume.operation,
+                    (int)volume.excludedPasses,
+                    0);
+
+            volumeCount++;
+        }
+
+
+        //
         // Publish globally.
         //
         using (IBaseRenderGraphBuilder builder =
@@ -264,6 +324,22 @@ public sealed class WaterLineMaskEffect
             Shader.SetGlobalTexture(
                 "_WaterLineMask",
                 waterLineMaskHandle);
+
+            Shader.SetGlobalInt(
+                "_VolumeCount",
+                volumeCount);
+
+            Shader.SetGlobalMatrixArray(
+                "_VolumeWorldToLocal",
+                volumeWorldToLocal);
+
+            Shader.SetGlobalVectorArray(
+                "_VolumeShapeData",
+                volumeShapeData);
+
+            Shader.SetGlobalVectorArray(
+                "_VolumeSettings",
+                volumeSettings);
         }
 
         //
@@ -281,9 +357,7 @@ public sealed class WaterLineMaskEffect
     public override void Dispose()
     {
         CoreUtils.Destroy(waterLineMaterial);
-
         CoreUtils.Destroy(upperSideMaterial);
-
         CoreUtils.Destroy(underSideMaterial);
 
         waterLineMaskHandle?.Release();
